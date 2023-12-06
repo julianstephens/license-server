@@ -38,10 +38,10 @@ repos:
     #
     # Go Test
     #
-    -   id: go-test-mod
-    -   id: go-test-pkg
-    -   id: go-test-repo-mod
-    -   id: go-test-repo-pkg
+    # -   id: go-test-mod
+    # -   id: go-test-pkg
+    # -   id: go-test-repo-mod
+    # -   id: go-test-repo-pkg
     #
     # Go Vet
     #
@@ -114,9 +114,9 @@ repos:
     # - Use the `name` attribute to provide better messaging when the hook runs
     # - Use the `alias` attribute to be able to invoke your hook via `pre-commit run`
     #
-    -   id: my-cmd
-    -   id: my-cmd-mod
-    -   id: my-cmd-pkg
-    -   id: my-cmd-repo
-    -   id: my-cmd-repo-mod
-    -   id: my-cmd-repo-pkg
+    # -   id: my-cmd
+    # -   id: my-cmd-mod
+    # -   id: my-cmd-pkg
+    # -   id: my-cmd-repo
+    # -   id: my-cmd-repo-mod
+    # -   id: my-cmd-repo-pkg
