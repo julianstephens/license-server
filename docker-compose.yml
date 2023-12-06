@@ -6,9 +6,9 @@ services:
     image: postgres:alpine
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${LS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${LS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${LS_POSTGRES_DB}
     ports:
       - 5432:5432
     volumes:
@@ -18,24 +18,18 @@ services:
       - ls-pg-data:/var/lib/postgresql/data
   app:
     container_name: app
-    hostname: api
     build:
       context: .
-      target: ${APP_ENV}
+      target: ${LS_APP_ENV}
       args:
-        APP_HOME: ${APP_HOME}
+        APP_HOME: ${LS_APP_HOME}
+    env_file: .env
     ports:
       - 8080:8080
     links:
       - database
     volumes:
-      - ./:${APP_HOME}
-  api:
-    container_name: api
-    image: cosmtrek/air
-    working_dir: /
-    ports:
-      - 8080:8080
+      - ./:${LS_APP_HOME}
 volumes:
   ls-pg-data:
     external: true
