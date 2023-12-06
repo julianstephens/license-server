@@ -1,0 +1,135 @@
+basePath: /api/v1
+definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  model.License:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      product:
+        $ref: '#/definitions/model.Product'
+      product_id:
+        type: string
+      updated_at:
+        type: string
+      value:
+        type: string
+    type: object
+  model.Product:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      licenses:
+        items:
+          $ref: '#/definitions/model.License'
+        type: array
+      name:
+        type: string
+      rules:
+        items:
+          $ref: '#/definitions/model.Rule'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  model.Rule:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/model.Product'
+        type: array
+      updated_at:
+        type: string
+      user_groups:
+        items:
+          $ref: '#/definitions/model.UserGroup'
+        type: array
+      users:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      groups:
+        items:
+          $ref: '#/definitions/model.UserGroup'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      rules:
+        items:
+          $ref: '#/definitions/model.Rule'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  model.UserGroup:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      rules:
+        items:
+          $ref: '#/definitions/model.Rule'
+        type: array
+      updated_at:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API for managing software licenses
+  title: License Server API
+  version: 0.1.0
+paths:
+  /users:
+    get:
+      description: add new user
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Add a user
+      tags:
+      - users
+swagger: "2.0"

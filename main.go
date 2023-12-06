@@ -2,21 +2,31 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"log/slog"
 
+	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/pkg/config"
 	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/logger"
 	"github.com/julianstephens/license-server/pkg/router"
 	"github.com/spf13/viper"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var (
 	appLogger *slog.Logger
 )
 
+//	@title			License Server API
+//	@version		0.1.0
+//	@description	REST API for managing software licenses
+
+// @host		localhost:8080
+// @BasePath	/api/v1
 func main() {
 	logger.Setup()
 	appLogger = logger.GetLogger()
@@ -35,6 +45,14 @@ func main() {
 	db := database.GetDB()
 
 	r := router.Setup(db)
+
+	r.GET("/api/v1/docs/*any",
+		ginSwagger.WrapHandler(swaggerFiles.Handler),
+	)
+
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "page not found"})
+	})
 
 	host := "0.0.0.0"
 	port := "8080"

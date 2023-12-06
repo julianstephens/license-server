@@ -12,7 +12,7 @@ DATABASE_URL="postgres://${LS_POSTGRES_USER}:${LS_POSTGRES_PASSWORD}@${LS_POSTGR
 .PHONY: swag up ci-swaggen
 
 swag:
-	watch -n 10 swag init -g app.go
+	watch -n 10 swag init -g main.go
 
 up:
 	docker compose up -d --build

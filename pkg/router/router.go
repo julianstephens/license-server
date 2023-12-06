@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"github.com/julianstephens/license-server/controller"
+	docs "github.com/julianstephens/license-server/docs"
 	"github.com/julianstephens/license-server/pkg/logger"
 	sloggin "github.com/samber/slog-gin"
 	"gorm.io/gorm"
@@ -20,7 +22,9 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	// api := controller.Controller{DB: db}
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
+	api := controller.Controller{DB: db}
 
 	publicGroup := r.Group("/api/v1")
 	{
@@ -31,6 +35,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 				"status":  "healthy",
 			})
 		})
+		publicGroup.GET("/auth/register", api.AddUser)
 	}
 
 	return r
