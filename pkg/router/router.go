@@ -46,7 +46,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 		}
 	}
 
-	protectedGroup := r.Group("/api/v1", middleware.AuthGuard(db))
+	protectedGroup := r.Group("/api/v1", middleware.AuthGuard(api))
 	{
 		admin := protectedGroup.Group("/admin")
 		{
