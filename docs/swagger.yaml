@@ -9,12 +9,47 @@ definitions:
         example: status bad request
         type: string
     type: object
+  httputil.HTTPResponse-model_APIKey:
+    properties:
+      data:
+        $ref: '#/definitions/model.APIKey'
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_User:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+      message:
+        type: string
+    type: object
+  model.APIKey:
+    properties:
+      created_at:
+        type: integer
+      deleted_at:
+        type: integer
+      id:
+        type: string
+      key:
+        items:
+          type: integer
+        type: array
+      scopes:
+        type: string
+      updated_at:
+        type: integer
+      user:
+        $ref: '#/definitions/model.User'
+      userId:
+        type: string
+    type: object
   model.License:
     properties:
       created_at:
-        type: string
+        type: integer
       deleted_at:
-        type: string
+        type: integer
       id:
         type: string
       product:
@@ -22,6 +57,10 @@ definitions:
       product_id:
         type: string
       updated_at:
+        type: integer
+      user:
+        $ref: '#/definitions/model.User'
+      user_id:
         type: string
       value:
         type: string
@@ -29,9 +68,9 @@ definitions:
   model.Product:
     properties:
       created_at:
-        type: string
+        type: integer
       deleted_at:
-        type: string
+        type: integer
       id:
         type: string
       licenses:
@@ -45,22 +84,24 @@ definitions:
           $ref: '#/definitions/model.Rule'
         type: array
       updated_at:
-        type: string
+        type: integer
     type: object
   model.Rule:
     properties:
       created_at:
-        type: string
+        type: integer
       deleted_at:
-        type: string
+        type: integer
       id:
+        type: string
+      name:
         type: string
       products:
         items:
           $ref: '#/definitions/model.Product'
         type: array
       updated_at:
-        type: string
+        type: integer
       user_groups:
         items:
           $ref: '#/definitions/model.UserGroup'
@@ -73,8 +114,10 @@ definitions:
   model.User:
     properties:
       created_at:
-        type: string
+        type: integer
       deleted_at:
+        type: integer
+      email:
         type: string
       groups:
         items:
@@ -84,27 +127,33 @@ definitions:
         type: string
       name:
         type: string
+      password:
+        type: string
       rules:
         items:
           $ref: '#/definitions/model.Rule'
         type: array
       updated_at:
-        type: string
+        type: integer
+    required:
+    - email
     type: object
   model.UserGroup:
     properties:
       created_at:
-        type: string
+        type: integer
       deleted_at:
-        type: string
+        type: integer
       id:
+        type: string
+      name:
         type: string
       rules:
         items:
           $ref: '#/definitions/model.Rule'
         type: array
       updated_at:
-        type: string
+        type: integer
       users:
         items:
           $ref: '#/definitions/model.User'
@@ -117,8 +166,8 @@ info:
   title: License Server API
   version: 0.1.0
 paths:
-  /users:
-    get:
+  /admin/users:
+    post:
       description: add new user
       responses:
         "200":
@@ -129,7 +178,65 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
       summary: Add a user
       tags:
       - users
+  /auth/register:
+    post:
+      description: register new application user
+      parameters:
+      - description: new user info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Registers a user
+      tags:
+      - auth
+  /auth/token:
+    post:
+      description: creates a new API key
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_APIKey'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Creates a token
+      tags:
+      - auth
+schemes:
+- http
+securityDefinitions:
+  ApiKey:
+    in: header
+    name: X-API-KEY
+    type: apiKey
 swagger: "2.0"

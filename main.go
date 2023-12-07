@@ -27,6 +27,11 @@ var (
 
 // @host		localhost:8080
 // @BasePath	/api/v1
+// @schemes http
+// @securityDefinitions.apikey ApiKey
+// @in header
+// @name X-API-KEY
+// @descripition User-specific API key
 func main() {
 	logger.Setup()
 	appLogger = logger.GetLogger()

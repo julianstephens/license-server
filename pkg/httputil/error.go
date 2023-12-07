@@ -1,8 +1,22 @@
 package httputil
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"strings"
 
-// NewError example
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+)
+
+type HTTPError struct {
+	Code    int    `json:"code" example:"400"`
+	Message string `json:"message" example:"status bad request"`
+}
+
+type ValidationError struct {
+	FieldError validator.FieldError
+}
+
 func NewError(ctx *gin.Context, status int, err error) {
 	er := HTTPError{
 		Code:    status,
@@ -11,8 +25,20 @@ func NewError(ctx *gin.Context, status int, err error) {
 	ctx.JSON(status, er)
 }
 
-// HTTPError example
-type HTTPError struct {
-	Code    int    `json:"code" example:"400"`
-	Message string `json:"message" example:"status bad request"`
+func (v ValidationError) NewFieldError() string {
+	var sb strings.Builder
+
+	sb.WriteString("validation failed on field '" + v.FieldError.Field() + "'")
+	sb.WriteString(", condition: " + v.FieldError.ActualTag())
+
+	if v.FieldError.Param() != "" {
+		sb.WriteString(" { " + v.FieldError.Param() + " }")
+	}
+
+	if v.FieldError.Value() != nil && v.FieldError.Value() != "" {
+		sb.WriteString(fmt.Sprintf(", actual: %v", v.FieldError.Value()))
+	}
+
+	return sb.String()
+
 }

@@ -13,10 +13,11 @@ import (
 // Define the models to generate migrations for.
 var models = []any{
 	&model.User{},
-	&model.UserGroup{},
 	&model.Product{},
 	&model.License{},
 	&model.Rule{},
+	&model.UserGroup{},
+	&model.APIKey{},
 }
 
 func main() {

@@ -8,9 +8,12 @@ import (
 	"github.com/julianstephens/license-server/controller"
 	docs "github.com/julianstephens/license-server/docs"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/middleware"
 	sloggin "github.com/samber/slog-gin"
 	"gorm.io/gorm"
 )
+
+var apiLogger = logger.GetLogger()
 
 func Setup(db *gorm.DB) *gin.Engine {
 	r := gin.New()
@@ -24,7 +27,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 
-	api := controller.Controller{DB: db}
+	api := controller.Controller{DB: db, Logger: apiLogger}
 
 	publicGroup := r.Group("/api/v1")
 	{
@@ -35,7 +38,20 @@ func Setup(db *gorm.DB) *gin.Engine {
 				"status":  "healthy",
 			})
 		})
-		publicGroup.GET("/auth/register", api.AddUser)
+
+		auth := publicGroup.Group("/auth")
+		{
+			auth.POST("/register", api.Register)
+			auth.POST("/token", api.CreateToken)
+		}
+	}
+
+	protectedGroup := r.Group("/api/v1", middleware.AuthGuard(db))
+	{
+		admin := protectedGroup.Group("/admin")
+		{
+			admin.POST("/users", api.AddUser)
+		}
 	}
 
 	return r

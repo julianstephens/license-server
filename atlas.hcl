@@ -12,7 +12,6 @@ env "gorm" {
 
   migration {
     dir = "file://migrations"
-    format = golang-migrate
   }
 
   format {
