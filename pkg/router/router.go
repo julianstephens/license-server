@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/gzip"
@@ -48,15 +49,24 @@ func Setup(db *gorm.DB) *gin.Engine {
 		}
 	}
 
-	protectedGroup := r.Group(BasePath, middleware.AuthGuard(api, "admin"))
+	adminGroup := r.Group(fmt.Sprintf("%s/admin", BasePath), middleware.AuthGuard(api, "admin"))
 	{
-		admin := protectedGroup.Group("/admin")
+		userGroup := adminGroup.Group("/users")
 		{
-			admin.GET("/users", api.GetUsers)
-			admin.GET("/users/:id", api.GetUser)
-			admin.POST("/users", api.AddUser)
-			admin.PUT("/users/:id", api.UpdateUser)
-			admin.DELETE("/users/:id", api.DeleteUser)
+			userGroup.GET("/", api.GetUsers)
+			userGroup.GET("/:id", api.GetUser)
+			userGroup.POST("/", api.AddUser)
+			userGroup.PUT("/:id", api.UpdateUser)
+			userGroup.DELETE("/:id", api.DeleteUser)
+		}
+
+		productGroup := adminGroup.Group("/products")
+		{
+			productGroup.GET("/", api.GetProducts)
+			productGroup.GET("/:id", api.GetProduct)
+			productGroup.POST("/", api.AddProduct)
+			productGroup.PUT("/:id", api.UpdateProduct)
+			productGroup.DELETE("/:id", api.DeleteProduct)
 		}
 	}
 

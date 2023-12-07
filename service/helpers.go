@@ -1,6 +1,11 @@
 package service
 
-import "reflect"
+import (
+	"errors"
+	"reflect"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Item struct {
 	Key   string
@@ -34,4 +39,12 @@ func Unpack[T any](obj T) interface{} {
 	}
 
 	return ret
+}
+
+func GetId(ctx *gin.Context) (string, error) {
+	id := ctx.Param("id")
+	if id == "" {
+		return id, errors.New("no resource id provided")
+	}
+	return id, nil
 }

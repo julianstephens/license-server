@@ -1,7 +1,9 @@
 package httputil
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -41,4 +43,12 @@ func (v ValidationError) NewFieldError() string {
 
 	return sb.String()
 
+}
+
+func HandleFieldError(ctx *gin.Context, err error) {
+	for _, fieldErr := range err.(validator.ValidationErrors) {
+		msg := ValidationError{FieldError: fieldErr}.NewFieldError()
+		NewError(ctx, http.StatusBadRequest, errors.New(msg))
+		return
+	}
 }

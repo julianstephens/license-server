@@ -7,7 +7,6 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/julianstephens/license-server/model"
 	"github.com/julianstephens/license-server/pkg/httputil"
 	"github.com/julianstephens/license-server/service"
@@ -28,13 +27,11 @@ type LoginRequest struct {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/register [post]
 func (base *Controller) Register(c *gin.Context) {
-	user := new(model.User)
+	var user model.User
+
 	if err := c.ShouldBindJSON(&user); err != nil {
-		for _, fieldErr := range err.(validator.ValidationErrors) {
-			msg := httputil.ValidationError{FieldError: fieldErr}.NewFieldError()
-			httputil.NewError(c, http.StatusBadRequest, errors.New(msg))
-			return
-		}
+		httputil.HandleFieldError(c, err)
+		return
 	}
 
 	hashedPassword, err := service.HashData(user.Password)
@@ -45,9 +42,14 @@ func (base *Controller) Register(c *gin.Context) {
 
 	user.Password = hashedPassword
 
-	res, err := service.CreateUser(base.DB, user)
+	res, err := service.Create[model.User](base.DB, user)
 	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		if strings.Contains(err.Error(), "duplicate") {
+			httputil.NewError(c, http.StatusBadRequest, err)
+		} else {
+			httputil.NewError(c, http.StatusInternalServerError, err)
+		}
+		return
 	}
 
 	httputil.NewResponse(c, http.MethodPost, res)
@@ -63,9 +65,10 @@ func (base *Controller) Register(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/token [post]
 func (base *Controller) CreateToken(c *gin.Context) {
-	req := new(LoginRequest)
+	var req LoginRequest
+
 	if err := c.ShouldBindJSON(&req); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
+		httputil.HandleFieldError(c, err)
 		return
 	}
 

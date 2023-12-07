@@ -1,4 +1,4 @@
-h1:kFY+KodJBrj6F1BLcd8HtdEhpDuZRazZlwPg7vaeRtk=
+h1:2DClrdWJc23Su9U+PG9sq5pKGJkOEAa9dxHMhnFvVDE=
 20231206213431.sql h1:RmBIS8ab0sMRde3JWHWq/oq+ZxwNdjoXXsX4lr1l/c8=
 20231206213907_add_user_groups.sql h1:SXVSGha1mkixqQ46UG/aZJzyydKAN1T/3N6hh6tcFkI=
 20231206213951_add_group_relations.sql h1:4jpZhE6DKy5SzNibMZ50R7QfAM+m/7rXZB1vrC2GE48=
@@ -6,3 +6,4 @@ h1:kFY+KodJBrj6F1BLcd8HtdEhpDuZRazZlwPg7vaeRtk=
 20231207012601_update_api_key.sql h1:PbSm7a8UH/MP+eGHtVMskZjoKlLz80Z2V/CvrgaUY2M=
 20231207031937_revert_api_key.sql h1:Hl3ZwPzcmV016bx4EqF/WnGonTPPXoKwmsXmT6UX4Hg=
 20231207034009_add_api_key_mask.sql h1:RMY9Hf2SQEJSAW4UtJxwsrWIi0HQuSvfwNP11hgwT+8=
+20231207212857_make_email_required.sql h1:aGgiNCH7saBeYLUAc7DH8zkZsGKz4j6ywB3pymV66/o=

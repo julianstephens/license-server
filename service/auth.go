@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/google/uuid"
@@ -30,7 +32,10 @@ func HashData(data any) (string, error) {
 }
 
 func CompareWithHash(data string, hash string) bool {
+	d, _ := HashData(data)
+	slog.Info(fmt.Sprintf("user pwd: %s\nreq pwd: %s", hash, d))
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(data))
+	slog.Info(err.Error())
 	return err == nil
 }
 

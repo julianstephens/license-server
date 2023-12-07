@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/model"
@@ -19,7 +20,7 @@ import (
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users [get]
 func (base *Controller) GetUsers(c *gin.Context) {
-	res, err := service.GetAllUsers(base.DB)
+	res, err := service.GetAll[model.User](base.DB)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
@@ -44,7 +45,7 @@ func (base *Controller) GetUser(c *gin.Context) {
 		return
 	}
 
-	res, err := service.FindUserById(base.DB, userId)
+	res, err := service.FindById[model.User](base.DB, userId)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
@@ -64,16 +65,20 @@ func (base *Controller) GetUser(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users [post]
 func (base *Controller) AddUser(c *gin.Context) {
-	var user *model.User
+	var user model.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	res, err := service.CreateUser(base.DB, user)
+	res, err := service.Create[model.User](base.DB, user)
 	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+		if strings.Contains(err.Error(), "duplicate") {
+			httputil.NewError(c, http.StatusBadRequest, err)
+		} else {
+			httputil.NewError(c, http.StatusInternalServerError, err)
+		}
 		return
 	}
 
@@ -91,11 +96,11 @@ func (base *Controller) AddUser(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users/:id [put]
 func (base *Controller) UpdateUser(c *gin.Context) {
-	var user *model.User
+	var user model.User
 
-	userId := c.Param("id")
-	if userId == "" {
-		httputil.NewError(c, http.StatusBadRequest, errors.New("no user id provided"))
+	userId, err := service.GetId(c)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
@@ -104,7 +109,7 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	res, err := service.ModifyUser(base.DB, user, userId)
+	res, err := service.Update[model.User](base.DB, userId, user)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
@@ -123,13 +128,13 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users/:id [delete]
 func (base *Controller) DeleteUser(c *gin.Context) {
-	userId := c.Param("id")
-	if userId == "" {
-		httputil.NewError(c, http.StatusBadRequest, errors.New("no user id provided"))
+	userId, err := service.GetId(c)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	res, err := service.DeleteUser(base.DB, userId)
+	res, err := service.Delete[model.User](base.DB, userId, model.User{})
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return

@@ -21,6 +21,7 @@ up:
 
 openapi:
 	@echo "[OAS3] Converting Swagger 2-to-3 (yaml)"
+	@rm -rf ./docs/v3
 	@docker run --rm -v $(PWD)/docs:/work $(OAS3_GENERATOR_DOCKER_IMAGE) \
 	  generate -i /work/swagger.yaml -o /work/v3 -g openapi-yaml --minimal-update
 	@docker run --rm -v $(PWD)/docs/v3:/work $(WORKER_IMAGE) \
@@ -33,7 +34,10 @@ openapi:
 	  generate -s -i /work/swagger.json -o /work/v3/openapi -g openapi --minimal-update
 	@echo "[OAS3] Cleaning up generated files"
 	@docker run --rm -v $(PWD)/docs/v3:/work $(WORKER_IMAGE) \
-	  sh -c "mv -f /work/openapi/openapi.json /work ; mv -f /work/openapi/openapi.yaml /work ; rm -rf /work/openapi"
+	  sh -c "mv -f /work/v3/openapi/openapi.json /work ; mv -f /work/v3/openapi/openapi.yaml /work ; rm -rf /work/openapi"
+	@docker run --rm -v $(PWD)/docs/v3:/work $(WORKER_IMAGE) \
+	  sh -c "mv -f /work/v3/openapi/openapi.json /work ; mv -f /work/v3/openapi/openapi.yaml /work ; rm -rf /work/openapi"
+	@sudo chown -R julian:julian ./docs/v3
 
 createdb:
 	@echo "[ATLAS] Generating SQL and applying schema"
