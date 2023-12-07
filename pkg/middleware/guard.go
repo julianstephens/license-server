@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func AuthGuard(db *gorm.DB) gin.HandlerFunc {
+func AuthGuard(api *controller.Contoller) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		apiKey := ctx.GetHeader("X-API-KEY")
 		if apiKey == "" {
@@ -19,7 +19,6 @@ func AuthGuard(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		api := controller.Controller{DB: db}
 		isAuthed, err := api.Authorize(apiKey)
 
 		if err != nil || !isAuthed {
