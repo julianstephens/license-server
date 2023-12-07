@@ -41,9 +41,10 @@ createdb:
 
 migration:
 	@echo "[ATLAS] Generating migration and applying to DB"
+	@atlas schema clean --env gorm --url $(DATABASE_URL)
 	@atlas migrate diff $(MIGRATION_NAME) --dev-url $(DATABASE_URL) --env gorm
-	# @atlas migrate push ls_app --dev-url $(DATABASE_URL)
-	# @atlas migrate apply --env gorm --url $(DATABASE_URL) --tx-mode none
+	@atlas migrate push license-server --env gorm --dev-url $(DATABASE_URL)
+	@atlas schema apply --env gorm --url $(DATABASE_URL) --dev-url $(DATABASE_URL)
 
 push:
 	@atlas migrate push license-server --env gorm --dev-url $(DATABASE_URL)
@@ -56,9 +57,10 @@ schema:
 	@echo "[ATLAS] Opening DB schema viewer"
 	@atlas schema inspect -w --env gorm --url $(DATABASE_URL)
 
-schemaclean:
+refresh:
 	@echo "[ATLAS] Cleaning DB schema"
 	@atlas schema clean --env gorm --url $(DATABASE_URL)
+	@atlas schema apply --env gorm --url $(DATABASE_URL) --dev-url $(DATABASE_URL)
 
 lint:
 	@atlas migrate lint --dev-url $(DATABASE_URL) -w

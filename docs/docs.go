@@ -16,22 +16,168 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/admin/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "retrieves all users",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-array_model_User"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
                         "ApiKey": []
                     }
                 ],
-                "description": "add new user",
+                "description": "creates a new user",
                 "tags": [
                     "users"
                 ],
                 "summary": "Add a user",
+                "parameters": [
+                    {
+                        "description": "new user info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "retrieve a specific user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get a user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "updates a specific user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user",
+                "parameters": [
+                    {
+                        "description": "updated user info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
                             "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "deletes a specific user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete a user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
                         }
                     },
                     "400": {
@@ -51,11 +197,11 @@ const docTemplate = `{
         },
         "/auth/register": {
             "post": {
-                "description": "register new application user",
+                "description": "registers new application user",
                 "tags": [
                     "auth"
                 ],
-                "summary": "Registers a user",
+                "summary": "Register a user",
                 "parameters": [
                     {
                         "description": "new user info",
@@ -95,7 +241,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Creates a token",
+                "summary": "Create a token",
                 "parameters": [
                     {
                         "description": "returning user info",
@@ -155,6 +301,20 @@ const docTemplate = `{
                 }
             }
         },
+        "httputil.HTTPResponse-array_model_User": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "httputil.HTTPResponse-model_APIKey": {
             "type": "object",
             "properties": {
@@ -190,10 +350,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "key": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
                 },
                 "scopes": {
                     "type": "string"

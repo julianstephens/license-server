@@ -3,7 +3,9 @@ package controller
 import (
 	"errors"
 	"net/http"
+	"strings"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/julianstephens/license-server/model"
@@ -17,8 +19,8 @@ type LoginRequest struct {
 }
 
 // Register godoc
-// @Summary Registers a user
-// @Description register new application user
+// @Summary Register a user
+// @Description registers new application user
 // @Tags auth
 // @Param data body model.User true "new user info"
 // @Success 200 {object} httputil.HTTPResponse[model.User]
@@ -52,7 +54,7 @@ func (base *Controller) Register(c *gin.Context) {
 }
 
 // CreateToken godoc
-// @Summary Creates a token
+// @Summary Create a token
 // @Description creates a new API key
 // @Tags auth
 // @Param data body LoginRequest true "returning user info"
@@ -67,7 +69,7 @@ func (base *Controller) CreateToken(c *gin.Context) {
 		return
 	}
 
-	user, err := service.FindByEmail(base.DB, req.Email)
+	user, err := service.FindUserByEmail(base.DB, req.Email)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
@@ -88,7 +90,15 @@ func (base *Controller) CreateToken(c *gin.Context) {
 	httputil.NewResponse(c, http.MethodGet, key)
 }
 
-func (base *Controller) Authorize(key string) (bool, error) {
+func (base *Controller) Authorize(key string, scopes ...string) (bool, error) {
 	apiKey, err := service.FindByKey(base.DB, key)
-	return apiKey != nil, err
+	if err != nil {
+		return false, err
+	}
+
+	if len(scopes) > 0 && !mapset.NewSet(strings.Split(apiKey.Scopes, ",")...).Contains(scopes...) {
+		return false, errors.New("user does not have required scopes")
+	}
+
+	return true, nil
 }

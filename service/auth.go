@@ -11,6 +11,7 @@ import (
 )
 
 const KeyByteSize int = 32
+const BcryptCost = 14
 
 func HashData(data any) (string, error) {
 	var bytes []byte
@@ -18,9 +19,9 @@ func HashData(data any) (string, error) {
 
 	switch v := data.(type) {
 	case string:
-		bytes, err = bcrypt.GenerateFromPassword([]byte(v), 14)
+		bytes, err = bcrypt.GenerateFromPassword([]byte(v), BcryptCost)
 	case []byte:
-		bytes, err = bcrypt.GenerateFromPassword(v, 14)
+		bytes, err = bcrypt.GenerateFromPassword(v, BcryptCost)
 	default:
 		return "", errors.New("invalid data type")
 	}

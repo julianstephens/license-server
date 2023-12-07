@@ -7,10 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/controller"
 	"github.com/julianstephens/license-server/pkg/httputil"
-	"gorm.io/gorm"
 )
 
-func AuthGuard(api *controller.Contoller) gin.HandlerFunc {
+func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		apiKey := ctx.GetHeader("X-API-KEY")
 		if apiKey == "" {
@@ -19,7 +18,7 @@ func AuthGuard(api *controller.Contoller) gin.HandlerFunc {
 			return
 		}
 
-		isAuthed, err := api.Authorize(apiKey)
+		isAuthed, err := api.Authorize(apiKey, scopes...)
 
 		if err != nil || !isAuthed {
 			httputil.NewError(ctx, http.StatusUnauthorized, errors.New("unauthorized"))

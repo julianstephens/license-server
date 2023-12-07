@@ -1,0 +1,488 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "contact" : { },
+    "description" : "REST API for managing software licenses",
+    "title" : "License Server API",
+    "version" : "0.1.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080/api/v1"
+  } ],
+  "paths" : {
+    "/admin/users" : {
+      "get" : {
+        "description" : "creates a new user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.User"
+              }
+            }
+          },
+          "description" : "new user info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/model.User"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Get all users",
+        "tags" : [ "users" ],
+        "x-codegen-request-body-name" : "data"
+      },
+      "post" : {
+        "description" : "creates a new user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.User"
+              }
+            }
+          },
+          "description" : "new user info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/model.User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Add a user",
+        "tags" : [ "users" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/auth/register" : {
+      "post" : {
+        "description" : "registers new application user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.User"
+              }
+            }
+          },
+          "description" : "new user info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "summary" : "Register a user",
+        "tags" : [ "auth" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/auth/token" : {
+      "post" : {
+        "description" : "creates a new API key",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/controller.LoginRequest"
+              }
+            }
+          },
+          "description" : "returning user info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_APIKey"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "summary" : "Create a token",
+        "tags" : [ "auth" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "controller.LoginRequest" : {
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPError" : {
+        "properties" : {
+          "code" : {
+            "example" : 400,
+            "type" : "integer"
+          },
+          "message" : {
+            "example" : "status bad request",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_APIKey" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.APIKey"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_User" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.User"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "model.APIKey" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "mask" : {
+            "type" : "string"
+          },
+          "scopes" : {
+            "type" : "string"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/model.User"
+          },
+          "userId" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "model.License" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "product" : {
+            "$ref" : "#/components/schemas/model.Product"
+          },
+          "product_id" : {
+            "type" : "string"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/model.User"
+          },
+          "user_id" : {
+            "type" : "string"
+          },
+          "value" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "model.Product" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "licenses" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.License"
+            },
+            "type" : "array"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "rules" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.Rule"
+            },
+            "type" : "array"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "model.Rule" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "products" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.Product"
+            },
+            "type" : "array"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          },
+          "user_groups" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.UserGroup"
+            },
+            "type" : "array"
+          },
+          "users" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.User"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "model.User" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "groups" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.UserGroup"
+            },
+            "type" : "array"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "rules" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.Rule"
+            },
+            "type" : "array"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          }
+        },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "model.UserGroup" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "integer"
+          },
+          "deleted_at" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "rules" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.Rule"
+            },
+            "type" : "array"
+          },
+          "updated_at" : {
+            "type" : "integer"
+          },
+          "users" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.User"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "ApiKey" : {
+        "in" : "header",
+        "name" : "X-API-KEY",
+        "type" : "apiKey"
+      }
+    }
+  },
+  "x-original-swagger-version" : "2.0"
+}

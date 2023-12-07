@@ -13,17 +13,74 @@
     "basePath": "/api/v1",
     "paths": {
         "/admin/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "creates a new user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "parameters": [
+                    {
+                        "description": "new user info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.User"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
                         "ApiKey": []
                     }
                 ],
-                "description": "add new user",
+                "description": "creates a new user",
                 "tags": [
                     "users"
                 ],
                 "summary": "Add a user",
+                "parameters": [
+                    {
+                        "description": "new user info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -48,11 +105,11 @@
         },
         "/auth/register": {
             "post": {
-                "description": "register new application user",
+                "description": "registers new application user",
                 "tags": [
                     "auth"
                 ],
-                "summary": "Registers a user",
+                "summary": "Register a user",
                 "parameters": [
                     {
                         "description": "new user info",
@@ -92,7 +149,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "Creates a token",
+                "summary": "Create a token",
                 "parameters": [
                     {
                         "description": "returning user info",
@@ -187,10 +244,10 @@
                     "type": "string"
                 },
                 "key": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
                 },
                 "scopes": {
                     "type": "string"

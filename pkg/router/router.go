@@ -13,6 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const BasePath = "/api/v1"
+
 var apiLogger = logger.GetLogger()
 
 func Setup(db *gorm.DB) *gin.Engine {
@@ -25,11 +27,11 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = BasePath
 
 	api := controller.Controller{DB: db, Logger: apiLogger}
 
-	publicGroup := r.Group("/api/v1")
+	publicGroup := r.Group(BasePath)
 	{
 		publicGroup.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
@@ -46,11 +48,15 @@ func Setup(db *gorm.DB) *gin.Engine {
 		}
 	}
 
-	protectedGroup := r.Group("/api/v1", middleware.AuthGuard(api))
+	protectedGroup := r.Group(BasePath, middleware.AuthGuard(api, "admin"))
 	{
 		admin := protectedGroup.Group("/admin")
 		{
+			admin.GET("/users", api.GetUsers)
+			admin.GET("/users/:id", api.GetUser)
 			admin.POST("/users", api.AddUser)
+			admin.PUT("/users/:id", api.UpdateUser)
+			admin.DELETE("/users/:id", api.DeleteUser)
 		}
 	}
 
