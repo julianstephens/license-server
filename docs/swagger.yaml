@@ -12,6 +12,15 @@ definitions:
     - email
     type: object
   controller.ScopeRequest:
+    properties:
+      add:
+        items:
+          type: string
+        type: array
+      remove:
+        items:
+          type: string
+        type: array
     type: object
   httputil.HTTPError:
     properties:
@@ -58,6 +67,13 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/model.User'
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_UserWithScopes:
+    properties:
+      data:
+        $ref: '#/definitions/model.UserWithScopes'
       message:
         type: string
     type: object
@@ -186,6 +202,15 @@ definitions:
         items:
           $ref: '#/definitions/model.User'
         type: array
+    type: object
+  model.UserWithScopes:
+    properties:
+      authentication_scopes:
+        items:
+          type: string
+        type: array
+      user:
+        $ref: '#/definitions/model.User'
     type: object
 host: localhost:8080
 info:
@@ -377,7 +402,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+            $ref: '#/definitions/httputil.HTTPResponse-model_UserWithScopes'
         "400":
           description: Bad Request
           schema:
@@ -416,6 +441,32 @@ paths:
       security:
       - ApiKey: []
       summary: Update a user
+      tags:
+      - users
+  /admin/users/:id/scopes:
+    put:
+      description: update scopes for a specific user
+      parameters:
+      - description: scopes to modify
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ScopeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_UserWithScopes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Update a user's scope
       tags:
       - users
   /auth/register:
@@ -470,32 +521,6 @@ paths:
       summary: Create a token
       tags:
       - auth
-  /auth/users/:id/scopes:
-    put:
-      description: update scopes for a specific user
-      parameters:
-      - description: scopes to modify
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/controller.ScopeRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/httputil.HTTPResponse-model_User'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: Update a user's scope
-      tags:
-      - users
 schemes:
 - http
 securityDefinitions:

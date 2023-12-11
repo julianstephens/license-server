@@ -282,7 +282,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_UserWithScopes"
                         }
                     },
                     "400": {
@@ -358,6 +358,46 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/httputil.HTTPResponse-model_User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/:id/scopes": {
+            "put": {
+                "description": "update scopes for a specific user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's scope",
+                "parameters": [
+                    {
+                        "description": "scopes to modify",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ScopeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_UserWithScopes"
                         }
                     },
                     "400": {
@@ -454,46 +494,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/auth/users/:id/scopes": {
-            "put": {
-                "description": "update scopes for a specific user",
-                "tags": [
-                    "users"
-                ],
-                "summary": "Update a user's scope",
-                "parameters": [
-                    {
-                        "description": "scopes to modify",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.ScopeRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -515,7 +515,21 @@ const docTemplate = `{
             }
         },
         "controller.ScopeRequest": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "add": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
         },
         "httputil.HTTPError": {
             "type": "object",
@@ -585,6 +599,17 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/model.User"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "httputil.HTTPResponse-model_UserWithScopes": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.UserWithScopes"
                 },
                 "message": {
                     "type": "string"
@@ -780,6 +805,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.User"
                     }
+                }
+            }
+        },
+        "model.UserWithScopes": {
+            "type": "object",
+            "properties": {
+                "authentication_scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 }
             }
         }

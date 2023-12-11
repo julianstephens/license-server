@@ -40,7 +40,7 @@ func GenerateKey(db *gorm.DB, userID string) (*model.DisplayAPIKey, error) {
 		return nil, errors.New("no user provided")
 	}
 
-	existingKey, _ := Find[model.APIKey](db, model.APIKey{UserId: userID}, false)
+	existingKey, _ := Find[model.APIKey](db, model.APIKey{UserId: userID}, nil)
 	if existingKey != nil {
 		return nil, fmt.Errorf("found existing api key: %s", existingKey.Mask)
 	}

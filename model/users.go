@@ -8,3 +8,8 @@ type User struct {
 	Groups   []*UserGroup `gorm:"many2many:groups;" json:"groups"`
 	Rules    []*Rule      `gorm:"many2many:user_rules;" json:"-"`
 }
+
+type UserWithScopes struct {
+	User   User     `json:"user"`
+	Scopes []string `json:"authentication_scopes"`
+}

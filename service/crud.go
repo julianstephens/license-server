@@ -4,6 +4,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type PreloadOptions struct {
+	ShouldPreload bool
+	PreloadQuery  string
+}
+
 func GetAll[T any](db *gorm.DB) (*[]T, error) {
 	var result []T
 
@@ -14,8 +19,17 @@ func GetAll[T any](db *gorm.DB) (*[]T, error) {
 	return &result, nil
 }
 
-func Find[T any](db *gorm.DB, conditions T, eagerLoad bool) (*T, error) {
+func Find[T any](db *gorm.DB, conditions T, preloadOpts *PreloadOptions) (*T, error) {
 	var result T
+
+	if preloadOpts != nil && preloadOpts.ShouldPreload {
+		if err := db.Preload(preloadOpts.PreloadQuery).Where(conditions).First(&result).Error; err != nil {
+			return nil, err
+		}
+
+		return &result, nil
+	}
+
 	if err := db.Where(conditions).First(&result).Error; err != nil {
 		return nil, err
 	}
@@ -40,18 +54,14 @@ func Create[T any](db *gorm.DB, newResource T, conditions ...T) (*T, error) {
 	return &newResource, nil
 }
 
-func Update[T any](db *gorm.DB, id string, updates T) (*T, error) {
+func Update[T any](db *gorm.DB, id string, updates map[string]any) (*T, error) {
 	existing, err := FindById[T](db, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// updates non-null/empty fields in existing resource
-	items := StructItems(updates)
-	for _, item := range items {
-		if item.Value != "" && item.Value != nil {
-			SetProperty(existing, item.Key, item.Value)
-		}
+	for key, val := range updates {
+		SetProperty(existing, key, val)
 	}
 
 	if err := db.Save(&existing).Error; err != nil {

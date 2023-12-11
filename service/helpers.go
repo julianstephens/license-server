@@ -12,8 +12,18 @@ type Item struct {
 	Value any
 }
 
+func If[T any](cond bool, vtrue, vfalse T) T {
+	if cond {
+		return vtrue
+	}
+	return vfalse
+}
+
 func StructItems[T any](obj T) []Item {
 	values := reflect.ValueOf(obj)
+	if values.Kind() == reflect.Ptr {
+		values = values.Elem()
+	}
 	types := values.Type()
 
 	var res []Item

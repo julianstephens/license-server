@@ -9,11 +9,12 @@ import (
 	"github.com/julianstephens/license-server/model"
 	"github.com/julianstephens/license-server/pkg/httputil"
 	"github.com/julianstephens/license-server/service"
+	"github.com/mitchellh/mapstructure"
 )
 
 type ScopeRequest struct {
-	add    []string
-	remove []string
+	Add    []string
+	Remove []string
 }
 
 // GetUsers godoc
@@ -39,21 +40,30 @@ func (base *Controller) GetUsers(c *gin.Context) {
 // @Description retrieve a specific user
 // @Tags users
 // @Security ApiKey
-// @Success 200 {object} httputil.HTTPResponse[model.User]
+// @Success 200 {object} httputil.HTTPResponse[model.UserWithScopes]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users/:id [get]
 func (base *Controller) GetUser(c *gin.Context) {
+	var res model.UserWithScopes
+
 	userId := c.Param("id")
 	if userId == "" {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("no user id provided"))
 		return
 	}
 
-	res, err := service.FindById[model.User](base.DB, userId)
+	user, err := service.FindById[model.User](base.DB, userId)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
+	}
+	res.User = *user
+
+	key, _ := service.Find[model.APIKey](base.DB, model.APIKey{UserId: user.ID}, nil)
+	scopes := key.Scopes
+	if len(scopes) > 0 {
+		res.Scopes = strings.Split(scopes, ",")
 	}
 
 	httputil.NewResponse(c, http.MethodGet, res)
@@ -114,7 +124,13 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	res, err := service.Update[model.User](base.DB, userId, user)
+	var decoded map[string]any
+	if err := mapstructure.Decode(user, decoded); err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	res, err := service.Update[model.User](base.DB, userId, decoded)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
@@ -153,11 +169,11 @@ func (base *Controller) DeleteUser(c *gin.Context) {
 // @Description update scopes for a specific user
 // @Tags users
 // @Param data body ScopeRequest true "scopes to modify"
-// @Success 200 {object} httputil.HTTPResponse[model.User]
+// @Success 200 {object} httputil.HTTPResponse[model.UserWithScopes]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /auth/users/:id/scopes [put]
-func (base *Controller) AddScopes(c *gin.Context) {
+// @Router /admin/users/:id/scopes [put]
+func (base *Controller) UpdateUserScopes(c *gin.Context) {
 	var req ScopeRequest
 
 	userId, err := service.GetId(c)
@@ -171,23 +187,27 @@ func (base *Controller) AddScopes(c *gin.Context) {
 		return
 	}
 
-	keyToFind := model.APIKey{UserId: userId}
-	key, err := service.Find[model.APIKey](base.DB, keyToFind, true)
+	key, err := service.Find[model.APIKey](base.DB, model.APIKey{UserId: userId}, &service.PreloadOptions{ShouldPreload: true, PreloadQuery: "User"})
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
+	user := key.User
+
+	toAdd := service.If(len(req.Add) > 0, req.Add, []string{})
+	toRemove := service.If(len(req.Remove) > 0, req.Remove, []string{})
+
 	curScopes := strings.Split(key.Scopes, ",")
-	cleanedScopes := service.Difference(curScopes, req.remove)
-	updatedScopes := append(cleanedScopes, req.add...)
+	cleanedScopes := service.Difference(curScopes, toRemove)
+	updatedScopes := append(cleanedScopes, toAdd...)
 	key.Scopes = strings.Join(updatedScopes, ",")
 
-	res, err := service.Update[model.APIKey](base.DB, key.ID, *key)
+	res, err := service.Update[model.APIKey](base.DB, key.ID, map[string]any{"Scopes": strings.Join(updatedScopes, ",")})
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, res)
+	httputil.NewResponse(c, http.MethodPut, model.UserWithScopes{User: user, Scopes: strings.Split(res.Scopes, ",")})
 }

@@ -360,7 +360,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_UserWithScopes"
                 }
               }
             },
@@ -442,6 +442,57 @@
           "ApiKey" : [ ]
         } ],
         "summary" : "Update a user",
+        "tags" : [ "users" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/admin/users/:id/scopes" : {
+      "put" : {
+        "description" : "update scopes for a specific user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/controller.ScopeRequest"
+              }
+            }
+          },
+          "description" : "scopes to modify",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_UserWithScopes"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "summary" : "Update a user's scope",
         "tags" : [ "users" ],
         "x-codegen-request-body-name" : "data"
       }
@@ -547,57 +598,6 @@
         "tags" : [ "auth" ],
         "x-codegen-request-body-name" : "data"
       }
-    },
-    "/auth/users/:id/scopes" : {
-      "put" : {
-        "description" : "update scopes for a specific user",
-        "requestBody" : {
-          "content" : {
-            "*/*" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/controller.ScopeRequest"
-              }
-            }
-          },
-          "description" : "scopes to modify",
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
-                }
-              }
-            },
-            "description" : "OK"
-          },
-          "400" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPError"
-                }
-              }
-            },
-            "description" : "Bad Request"
-          },
-          "500" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPError"
-                }
-              }
-            },
-            "description" : "Internal Server Error"
-          }
-        },
-        "summary" : "Update a user's scope",
-        "tags" : [ "users" ],
-        "x-codegen-request-body-name" : "data"
-      }
     }
   },
   "components" : {
@@ -618,6 +618,20 @@
         "type" : "object"
       },
       "controller.ScopeRequest" : {
+        "properties" : {
+          "add" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "remove" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
         "type" : "object"
       },
       "httputil.HTTPError" : {
@@ -687,6 +701,17 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/model.User"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_UserWithScopes" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.UserWithScopes"
           },
           "message" : {
             "type" : "string"
@@ -880,6 +905,20 @@
               "$ref" : "#/components/schemas/model.User"
             },
             "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "model.UserWithScopes" : {
+        "properties" : {
+          "authentication_scopes" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/model.User"
           }
         },
         "type" : "object"

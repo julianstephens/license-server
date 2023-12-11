@@ -7,6 +7,7 @@ import (
 	"github.com/julianstephens/license-server/model"
 	"github.com/julianstephens/license-server/pkg/httputil"
 	"github.com/julianstephens/license-server/service"
+	"github.com/mitchellh/mapstructure"
 )
 
 // GetProducts godoc
@@ -103,7 +104,13 @@ func (base *Controller) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	res, err := service.Update(base.DB, productId, productUpdates)
+	var decoded map[string]any
+	if err := mapstructure.Decode(productUpdates, decoded); err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	res, err := service.Update[model.Product](base.DB, productId, decoded)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return

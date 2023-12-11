@@ -58,6 +58,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 			userGroup.POST("/", api.AddUser)
 			userGroup.PUT("/:id", api.UpdateUser)
 			userGroup.DELETE("/:id", api.DeleteUser)
+			userGroup.PUT("/:id/scopes", api.UpdateUserScopes)
 		}
 
 		productGroup := adminGroup.Group("/products")
