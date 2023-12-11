@@ -31,4 +31,4 @@ RUN go mod download
 COPY . .
 
 # Build and run binary with live reloading
-CMD ["watch", "-n", "90", "make", "swagger"]
+CMD ["watch", "-n", "90", "make", "docs-gen"]
