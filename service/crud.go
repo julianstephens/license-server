@@ -14,6 +14,15 @@ func GetAll[T any](db *gorm.DB) (*[]T, error) {
 	return &result, nil
 }
 
+func Find[T any](db *gorm.DB, conditions T, eagerLoad bool) (*T, error) {
+	var result T
+	if err := db.Where(conditions).First(&result).Error; err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func FindById[T any](db *gorm.DB, id string) (*T, error) {
 	var result T
 	if err := db.Where("id = ?", id).First(&result).Error; err != nil {

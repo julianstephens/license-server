@@ -9,7 +9,7 @@ FROM base as development
 WORKDIR $APP_HOME
 
 # Add bash shell and gcc toolkit
-RUN apk add --no-cache --upgrade bash build-base
+RUN apk add --no-cache --upgrade bash build-base vim
 
 # Install air
 RUN go install github.com/cosmtrek/air@latest
@@ -23,4 +23,3 @@ COPY . .
 
 # Build and run binary with live reloading
 CMD ["air", "-c", ".air.toml"]
-

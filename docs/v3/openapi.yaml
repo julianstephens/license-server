@@ -7,15 +7,42 @@ info:
 servers:
 - url: http://localhost:8080/api/v1
 paths:
-  /admin/users:
-    post:
-      description: add new user
+  /admin/products:
+    get:
+      description: retrieves all products
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/model.User'
+                $ref: '#/components/schemas/httputil.HTTPResponse-array_model_Product'
+          description: OK
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Get all products
+      tags:
+      - products
+    post:
+      description: creates a new product
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/model.Product'
+        description: new product info
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_Product'
           description: OK
         "400":
           content:
@@ -31,12 +58,120 @@ paths:
           description: Internal Server Error
       security:
       - ApiKey: []
-      summary: Add a user
+      summary: Add a product
+      tags:
+      - products
+      x-codegen-request-body-name: data
+  /admin/products/:id:
+    delete:
+      description: deletes a specific product
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_Product'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      description: retrieve a specific product
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_Product'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Get a product
+      tags:
+      - products
+    put:
+      description: updates a specific product
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/model.Product'
+        description: updated product info
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_Product'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Update a product
+      tags:
+      - products
+      x-codegen-request-body-name: data
+  /admin/users:
+    get:
+      description: retrieves all users
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-array_model_User'
+          description: OK
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Get all users
       tags:
       - users
-  /auth/register:
     post:
-      description: register new application user
+      description: creates a new user
       requestBody:
         content:
           '*/*':
@@ -63,19 +198,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/httputil.HTTPError'
           description: Internal Server Error
-      summary: Registers a user
+      security:
+      - ApiKey: []
+      summary: Add a user
       tags:
-      - auth
+      - users
       x-codegen-request-body-name: data
-  /auth/token:
-    post:
-      description: creates a new API key
+  /admin/users/:id:
+    delete:
+      description: deletes a specific user
       responses:
         "200":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/httputil.HTTPResponse-model_APIKey'
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_User'
           description: OK
         "400":
           content:
@@ -89,11 +226,185 @@ paths:
               schema:
                 $ref: '#/components/schemas/httputil.HTTPError'
           description: Internal Server Error
-      summary: Creates a token
+      security:
+      - ApiKey: []
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      description: retrieve a specific user
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_User'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Get a user
+      tags:
+      - users
+    put:
+      description: updates a specific user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/model.User'
+        description: updated user info
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_User'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Update a user
+      tags:
+      - users
+      x-codegen-request-body-name: data
+  /auth/register:
+    post:
+      description: registers new application user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/controller.AuthRequest'
+        description: new user info
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_User'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      summary: Register a user
       tags:
       - auth
+      x-codegen-request-body-name: data
+  /auth/token:
+    post:
+      description: creates a new API key
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/controller.AuthRequest'
+        description: returning user info
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_DisplayAPIKey'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      summary: Create a token
+      tags:
+      - auth
+      x-codegen-request-body-name: data
+  /auth/users/:id/scopes:
+    put:
+      description: update scopes for a specific user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/controller.ScopeRequest'
+        description: scopes to modify
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_User'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      summary: Update a user's scope
+      tags:
+      - users
+      x-codegen-request-body-name: data
 components:
   schemas:
+    controller.AuthRequest:
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+      required:
+      - email
+      type: object
+    controller.ScopeRequest:
+      type: object
     httputil.HTTPError:
       properties:
         code:
@@ -103,874 +414,947 @@ components:
           example: status bad request
           type: string
       type: object
-    httputil.HTTPResponse-model_APIKey:
+    httputil.HTTPResponse-array_model_Product:
       example:
         data:
-          updated_at: 5
+        - licenses:
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
+              name: name
+              created_at: 2
+              groups:
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              id: id
+              deleted_at: 7
+              email: email
+            value: value
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
+              name: name
+              created_at: 2
+              groups:
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              id: id
+              deleted_at: 7
+              email: email
+            value: value
+          updated_at: 1
+          name: name
           created_at: 0
-          id: id
-          scopes: scopes
-          deleted_at: 6
-          user:
-            password: password
-            updated_at: 1
+          rules:
+          - updated_at: 7
             name: name
-            created_at: 0
-            groups:
-            - updated_at: 1
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          - updated_at: 7
+            name: name
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          id: id
+          deleted_at: 6
+        - licenses:
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
               name: name
-              created_at: 1
-              rules:
+              created_at: 2
+              groups:
               - updated_at: 1
                 name: name
-                created_at: 5
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
                 id: id
-                deleted_at: 2
+                deleted_at: 3
                 users:
-                - null
-                - null
-                products:
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                user_groups:
                 - null
                 - null
               - updated_at: 1
                 name: name
-                created_at: 5
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
                 id: id
-                deleted_at: 2
+                deleted_at: 3
                 users:
-                - null
-                - null
-                products:
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                user_groups:
                 - null
                 - null
               id: id
-              deleted_at: 5
-              users:
-              - null
-              - null
-            - updated_at: 1
+              deleted_at: 7
+              email: email
+            value: value
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
               name: name
-              created_at: 1
-              rules:
+              created_at: 2
+              groups:
               - updated_at: 1
                 name: name
-                created_at: 5
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
                 id: id
-                deleted_at: 2
+                deleted_at: 3
                 users:
-                - null
-                - null
-                products:
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                user_groups:
                 - null
                 - null
               - updated_at: 1
                 name: name
-                created_at: 5
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
                 id: id
-                deleted_at: 2
+                deleted_at: 3
                 users:
-                - null
-                - null
-                products:
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                - licenses:
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  - product: null
-                    updated_at: 4
-                    user_id: user_id
-                    product_id: product_id
-                    created_at: 3
-                    id: id
-                    deleted_at: 2
-                    user: null
-                    value: value
-                  updated_at: 7
-                  name: name
-                  created_at: 7
-                  rules:
-                  - null
-                  - null
-                  id: id
-                  deleted_at: 9
-                user_groups:
                 - null
                 - null
               id: id
-              deleted_at: 5
-              users:
-              - null
-              - null
+              deleted_at: 7
+              email: email
+            value: value
+          updated_at: 1
+          name: name
+          created_at: 0
+          rules:
+          - updated_at: 7
+            name: name
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          - updated_at: 7
+            name: name
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          id: id
+          deleted_at: 6
+        message: message
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/model.Product'
+          type: array
+        message:
+          type: string
+      type: object
+    httputil.HTTPResponse-array_model_User:
+      example:
+        data:
+        - updated_at: 1
+          name: name
+          created_at: 2
+          groups:
+          - updated_at: 1
+            name: name
+            created_at: 9
             rules:
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
             id: id
-            deleted_at: 6
-            email: email
-          userId: userId
-          key:
-          - 1
-          - 1
+            deleted_at: 3
+            users:
+            - null
+            - null
+          - updated_at: 1
+            name: name
+            created_at: 9
+            rules:
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            id: id
+            deleted_at: 3
+            users:
+            - null
+            - null
+          id: id
+          deleted_at: 7
+          email: email
+        - updated_at: 1
+          name: name
+          created_at: 2
+          groups:
+          - updated_at: 1
+            name: name
+            created_at: 9
+            rules:
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            id: id
+            deleted_at: 3
+            users:
+            - null
+            - null
+          - updated_at: 1
+            name: name
+            created_at: 9
+            rules:
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            id: id
+            deleted_at: 3
+            users:
+            - null
+            - null
+          id: id
+          deleted_at: 7
+          email: email
         message: message
       properties:
         data:
-          $ref: '#/components/schemas/model.APIKey'
+          items:
+            $ref: '#/components/schemas/model.User'
+          type: array
+        message:
+          type: string
+      type: object
+    httputil.HTTPResponse-model_DisplayAPIKey:
+      example:
+        data:
+          updated_at: 1
+          created_at: 0
+          id: id
+          scopes: scopes
+          deleted_at: 6
+          userId: userId
+          key: key
+        message: message
+      properties:
+        data:
+          $ref: '#/components/schemas/model.DisplayAPIKey'
+        message:
+          type: string
+      type: object
+    httputil.HTTPResponse-model_Product:
+      example:
+        data:
+          licenses:
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
+              name: name
+              created_at: 2
+              groups:
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              id: id
+              deleted_at: 7
+              email: email
+            value: value
+          - product: null
+            updated_at: 5
+            user_id: user_id
+            product_id: product_id
+            created_at: 1
+            id: id
+            deleted_at: 5
+            user:
+              updated_at: 1
+              name: name
+              created_at: 2
+              groups:
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              - updated_at: 1
+                name: name
+                created_at: 9
+                rules:
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                - updated_at: 7
+                  name: name
+                  created_at: 2
+                  id: id
+                  deleted_at: 4
+                  users:
+                  - null
+                  - null
+                  products:
+                  - null
+                  - null
+                  user_groups:
+                  - null
+                  - null
+                id: id
+                deleted_at: 3
+                users:
+                - null
+                - null
+              id: id
+              deleted_at: 7
+              email: email
+            value: value
+          updated_at: 1
+          name: name
+          created_at: 0
+          rules:
+          - updated_at: 7
+            name: name
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          - updated_at: 7
+            name: name
+            created_at: 2
+            id: id
+            deleted_at: 4
+            users:
+            - null
+            - null
+            products:
+            - null
+            - null
+            user_groups:
+            - null
+            - null
+          id: id
+          deleted_at: 6
+        message: message
+      properties:
+        data:
+          $ref: '#/components/schemas/model.Product'
         message:
           type: string
       type: object
     httputil.HTTPResponse-model_User:
       example:
         data:
-          password: password
           updated_at: 1
           name: name
-          created_at: 0
+          created_at: 2
           groups:
           - updated_at: 1
             name: name
-            created_at: 1
+            created_at: 9
             rules:
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
             id: id
-            deleted_at: 5
+            deleted_at: 3
             users:
             - null
             - null
           - updated_at: 1
             name: name
-            created_at: 1
+            created_at: 9
             rules:
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
-            - updated_at: 1
+            - updated_at: 7
               name: name
-              created_at: 5
+              created_at: 2
               id: id
-              deleted_at: 2
+              deleted_at: 4
               users:
               - null
               - null
               products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
+              - null
+              - null
               user_groups:
               - null
               - null
             id: id
-            deleted_at: 5
+            deleted_at: 3
             users:
-            - null
-            - null
-          rules:
-          - updated_at: 1
-            name: name
-            created_at: 5
-            id: id
-            deleted_at: 2
-            users:
-            - null
-            - null
-            products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            user_groups:
-            - null
-            - null
-          - updated_at: 1
-            name: name
-            created_at: 5
-            id: id
-            deleted_at: 2
-            users:
-            - null
-            - null
-            products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            user_groups:
             - null
             - null
           id: id
-          deleted_at: 6
+          deleted_at: 7
           email: email
         message: message
       properties:
@@ -979,441 +1363,15 @@ components:
         message:
           type: string
       type: object
-    model.APIKey:
+    model.DisplayAPIKey:
       example:
-        updated_at: 5
+        updated_at: 1
         created_at: 0
         id: id
         scopes: scopes
         deleted_at: 6
-        user:
-          password: password
-          updated_at: 1
-          name: name
-          created_at: 0
-          groups:
-          - updated_at: 1
-            name: name
-            created_at: 1
-            rules:
-            - updated_at: 1
-              name: name
-              created_at: 5
-              id: id
-              deleted_at: 2
-              users:
-              - null
-              - null
-              products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              user_groups:
-              - null
-              - null
-            - updated_at: 1
-              name: name
-              created_at: 5
-              id: id
-              deleted_at: 2
-              users:
-              - null
-              - null
-              products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              user_groups:
-              - null
-              - null
-            id: id
-            deleted_at: 5
-            users:
-            - null
-            - null
-          - updated_at: 1
-            name: name
-            created_at: 1
-            rules:
-            - updated_at: 1
-              name: name
-              created_at: 5
-              id: id
-              deleted_at: 2
-              users:
-              - null
-              - null
-              products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              user_groups:
-              - null
-              - null
-            - updated_at: 1
-              name: name
-              created_at: 5
-              id: id
-              deleted_at: 2
-              users:
-              - null
-              - null
-              products:
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              - licenses:
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                - product: null
-                  updated_at: 4
-                  user_id: user_id
-                  product_id: product_id
-                  created_at: 3
-                  id: id
-                  deleted_at: 2
-                  user: null
-                  value: value
-                updated_at: 7
-                name: name
-                created_at: 7
-                rules:
-                - null
-                - null
-                id: id
-                deleted_at: 9
-              user_groups:
-              - null
-              - null
-            id: id
-            deleted_at: 5
-            users:
-            - null
-            - null
-          rules:
-          - updated_at: 1
-            name: name
-            created_at: 5
-            id: id
-            deleted_at: 2
-            users:
-            - null
-            - null
-            products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            user_groups:
-            - null
-            - null
-          - updated_at: 1
-            name: name
-            created_at: 5
-            id: id
-            deleted_at: 2
-            users:
-            - null
-            - null
-            products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            user_groups:
-            - null
-            - null
-          id: id
-          deleted_at: 6
-          email: email
         userId: userId
-        key:
-        - 1
-        - 1
+        key: key
       properties:
         created_at:
           type: integer
@@ -1422,28 +1380,105 @@ components:
         id:
           type: string
         key:
-          items:
-            type: integer
-          type: array
+          type: string
         scopes:
           type: string
         updated_at:
           type: integer
-        user:
-          $ref: '#/components/schemas/model.User'
         userId:
           type: string
       type: object
     model.License:
       example:
         product: null
-        updated_at: 4
+        updated_at: 5
         user_id: user_id
         product_id: product_id
-        created_at: 3
+        created_at: 1
         id: id
-        deleted_at: 2
-        user: null
+        deleted_at: 5
+        user:
+          updated_at: 1
+          name: name
+          created_at: 2
+          groups:
+          - updated_at: 1
+            name: name
+            created_at: 9
+            rules:
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            id: id
+            deleted_at: 3
+            users:
+            - null
+            - null
+          - updated_at: 1
+            name: name
+            created_at: 9
+            rules:
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            - updated_at: 7
+              name: name
+              created_at: 2
+              id: id
+              deleted_at: 4
+              users:
+              - null
+              - null
+              products:
+              - null
+              - null
+              user_groups:
+              - null
+              - null
+            id: id
+            deleted_at: 3
+            users:
+            - null
+            - null
+          id: id
+          deleted_at: 7
+          email: email
         value: value
       properties:
         created_at:
@@ -1469,31 +1504,219 @@ components:
       example:
         licenses:
         - product: null
-          updated_at: 4
+          updated_at: 5
           user_id: user_id
           product_id: product_id
-          created_at: 3
+          created_at: 1
           id: id
-          deleted_at: 2
-          user: null
+          deleted_at: 5
+          user:
+            updated_at: 1
+            name: name
+            created_at: 2
+            groups:
+            - updated_at: 1
+              name: name
+              created_at: 9
+              rules:
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              id: id
+              deleted_at: 3
+              users:
+              - null
+              - null
+            - updated_at: 1
+              name: name
+              created_at: 9
+              rules:
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              id: id
+              deleted_at: 3
+              users:
+              - null
+              - null
+            id: id
+            deleted_at: 7
+            email: email
           value: value
         - product: null
-          updated_at: 4
+          updated_at: 5
           user_id: user_id
           product_id: product_id
-          created_at: 3
+          created_at: 1
           id: id
-          deleted_at: 2
-          user: null
+          deleted_at: 5
+          user:
+            updated_at: 1
+            name: name
+            created_at: 2
+            groups:
+            - updated_at: 1
+              name: name
+              created_at: 9
+              rules:
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              id: id
+              deleted_at: 3
+              users:
+              - null
+              - null
+            - updated_at: 1
+              name: name
+              created_at: 9
+              rules:
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              - updated_at: 7
+                name: name
+                created_at: 2
+                id: id
+                deleted_at: 4
+                users:
+                - null
+                - null
+                products:
+                - null
+                - null
+                user_groups:
+                - null
+                - null
+              id: id
+              deleted_at: 3
+              users:
+              - null
+              - null
+            id: id
+            deleted_at: 7
+            email: email
           value: value
-        updated_at: 7
+        updated_at: 1
         name: name
-        created_at: 7
+        created_at: 0
         rules:
-        - null
-        - null
+        - updated_at: 7
+          name: name
+          created_at: 2
+          id: id
+          deleted_at: 4
+          users:
+          - null
+          - null
+          products:
+          - null
+          - null
+          user_groups:
+          - null
+          - null
+        - updated_at: 7
+          name: name
+          created_at: 2
+          id: id
+          deleted_at: 4
+          users:
+          - null
+          - null
+          products:
+          - null
+          - null
+          user_groups:
+          - null
+          - null
         id: id
-        deleted_at: 9
+        deleted_at: 6
       properties:
         created_at:
           type: integer
@@ -1516,69 +1739,17 @@ components:
       type: object
     model.Rule:
       example:
-        updated_at: 1
+        updated_at: 7
         name: name
-        created_at: 5
+        created_at: 2
         id: id
-        deleted_at: 2
+        deleted_at: 4
         users:
         - null
         - null
         products:
-        - licenses:
-          - product: null
-            updated_at: 4
-            user_id: user_id
-            product_id: product_id
-            created_at: 3
-            id: id
-            deleted_at: 2
-            user: null
-            value: value
-          - product: null
-            updated_at: 4
-            user_id: user_id
-            product_id: product_id
-            created_at: 3
-            id: id
-            deleted_at: 2
-            user: null
-            value: value
-          updated_at: 7
-          name: name
-          created_at: 7
-          rules:
-          - null
-          - null
-          id: id
-          deleted_at: 9
-        - licenses:
-          - product: null
-            updated_at: 4
-            user_id: user_id
-            product_id: product_id
-            created_at: 3
-            id: id
-            deleted_at: 2
-            user: null
-            value: value
-          - product: null
-            updated_at: 4
-            user_id: user_id
-            product_id: product_id
-            created_at: 3
-            id: id
-            deleted_at: 2
-            user: null
-            value: value
-          updated_at: 7
-          name: name
-          created_at: 7
-          rules:
-          - null
-          - null
-          id: id
-          deleted_at: 9
+        - null
+        - null
         user_groups:
         - null
         - null
@@ -1608,428 +1779,86 @@ components:
       type: object
     model.User:
       example:
-        password: password
         updated_at: 1
         name: name
-        created_at: 0
+        created_at: 2
         groups:
         - updated_at: 1
           name: name
-          created_at: 1
+          created_at: 9
           rules:
-          - updated_at: 1
+          - updated_at: 7
             name: name
-            created_at: 5
+            created_at: 2
             id: id
-            deleted_at: 2
+            deleted_at: 4
             users:
             - null
             - null
             products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
+            - null
+            - null
             user_groups:
             - null
             - null
-          - updated_at: 1
+          - updated_at: 7
             name: name
-            created_at: 5
+            created_at: 2
             id: id
-            deleted_at: 2
+            deleted_at: 4
             users:
             - null
             - null
             products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
+            - null
+            - null
             user_groups:
             - null
             - null
           id: id
-          deleted_at: 5
+          deleted_at: 3
           users:
           - null
           - null
         - updated_at: 1
           name: name
-          created_at: 1
+          created_at: 9
           rules:
-          - updated_at: 1
+          - updated_at: 7
             name: name
-            created_at: 5
+            created_at: 2
             id: id
-            deleted_at: 2
+            deleted_at: 4
             users:
             - null
             - null
             products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
+            - null
+            - null
             user_groups:
             - null
             - null
-          - updated_at: 1
+          - updated_at: 7
             name: name
-            created_at: 5
+            created_at: 2
             id: id
-            deleted_at: 2
+            deleted_at: 4
             users:
             - null
             - null
             products:
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
-            - licenses:
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              - product: null
-                updated_at: 4
-                user_id: user_id
-                product_id: product_id
-                created_at: 3
-                id: id
-                deleted_at: 2
-                user: null
-                value: value
-              updated_at: 7
-              name: name
-              created_at: 7
-              rules:
-              - null
-              - null
-              id: id
-              deleted_at: 9
+            - null
+            - null
             user_groups:
             - null
             - null
           id: id
-          deleted_at: 5
+          deleted_at: 3
           users:
-          - null
-          - null
-        rules:
-        - updated_at: 1
-          name: name
-          created_at: 5
-          id: id
-          deleted_at: 2
-          users:
-          - null
-          - null
-          products:
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          user_groups:
-          - null
-          - null
-        - updated_at: 1
-          name: name
-          created_at: 5
-          id: id
-          deleted_at: 2
-          users:
-          - null
-          - null
-          products:
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          user_groups:
           - null
           - null
         id: id
-        deleted_at: 6
+        deleted_at: 7
         email: email
       properties:
         created_at:
@@ -2046,12 +1875,6 @@ components:
           type: string
         name:
           type: string
-        password:
-          type: string
-        rules:
-          items:
-            $ref: '#/components/schemas/model.Rule'
-          type: array
         updated_at:
           type: integer
       required:
@@ -2061,142 +1884,38 @@ components:
       example:
         updated_at: 1
         name: name
-        created_at: 1
+        created_at: 9
         rules:
-        - updated_at: 1
+        - updated_at: 7
           name: name
-          created_at: 5
+          created_at: 2
           id: id
-          deleted_at: 2
+          deleted_at: 4
           users:
           - null
           - null
           products:
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
+          - null
+          - null
           user_groups:
           - null
           - null
-        - updated_at: 1
+        - updated_at: 7
           name: name
-          created_at: 5
+          created_at: 2
           id: id
-          deleted_at: 2
+          deleted_at: 4
           users:
           - null
           - null
           products:
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
-          - licenses:
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            - product: null
-              updated_at: 4
-              user_id: user_id
-              product_id: product_id
-              created_at: 3
-              id: id
-              deleted_at: 2
-              user: null
-              value: value
-            updated_at: 7
-            name: name
-            created_at: 7
-            rules:
-            - null
-            - null
-            id: id
-            deleted_at: 9
+          - null
+          - null
           user_groups:
           - null
           - null
         id: id
-        deleted_at: 5
+        deleted_at: 3
         users:
         - null
         - null

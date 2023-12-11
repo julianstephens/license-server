@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 	"strings"
 
 	"github.com/google/uuid"
@@ -13,9 +12,9 @@ import (
 )
 
 const KeyByteSize int = 32
-const BcryptCost = 14
+const BcryptCost int = 14
 
-func HashData(data any) (string, error) {
+func HashData(data any) ([]byte, error) {
 	var bytes []byte
 	var err error
 
@@ -25,23 +24,25 @@ func HashData(data any) (string, error) {
 	case []byte:
 		bytes, err = bcrypt.GenerateFromPassword(v, BcryptCost)
 	default:
-		return "", errors.New("invalid data type")
+		return []byte{}, errors.New("invalid data type")
 	}
 
-	return string(bytes), err
+	return bytes, err
 }
 
-func CompareWithHash(data string, hash string) bool {
-	d, _ := HashData(data)
-	slog.Info(fmt.Sprintf("user pwd: %s\nreq pwd: %s", hash, d))
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(data))
-	slog.Info(err.Error())
+func CompareWithHash(data string, hash []byte) bool {
+	err := bcrypt.CompareHashAndPassword(hash, []byte(data))
 	return err == nil
 }
 
-func GenerateKey(db *gorm.DB, userID string) (*model.APIKey, error) {
+func GenerateKey(db *gorm.DB, userID string) (*model.DisplayAPIKey, error) {
 	if userID == "" {
 		return nil, errors.New("no user provided")
+	}
+
+	existingKey, _ := Find[model.APIKey](db, model.APIKey{UserId: userID}, false)
+	if existingKey != nil {
+		return nil, fmt.Errorf("found existing api key: %s", existingKey.Mask)
 	}
 
 	uid := uuid.New().String()
@@ -59,10 +60,26 @@ func GenerateKey(db *gorm.DB, userID string) (*model.APIKey, error) {
 	}
 
 	err = db.Save(key).Error
-	return &model.APIKey{UserId: userID, Key: apiKey, Mask: apiKey[:6]}, err
+	return &model.DisplayAPIKey{UserId: userID, Key: apiKey, Mask: apiKey[:6]}, err
 }
 
 func FindByKey(db *gorm.DB, key string) (*model.APIKey, error) {
+	var apiKey model.APIKey
+
+	err := db.Where(&model.APIKey{Mask: key[:6]}).First(&apiKey).Error
+	if err != nil {
+		return nil, err
+	}
+
+	isValidKey := CompareWithHash(key, apiKey.Key)
+	if !isValidKey {
+		return nil, errors.New("invalid key")
+	}
+
+	return &apiKey, nil
+}
+
+func FindByOwner(db *gorm.DB, key string) (*model.APIKey, error) {
 	var apiKey model.APIKey
 
 	err := db.Where(&model.APIKey{Mask: key[:6]}).First(&apiKey).Error

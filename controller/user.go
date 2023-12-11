@@ -11,6 +11,11 @@ import (
 	"github.com/julianstephens/license-server/service"
 )
 
+type ScopeRequest struct {
+	add    []string
+	remove []string
+}
+
 // GetUsers godoc
 // @Summary Get all users
 // @Description retrieves all users
@@ -141,4 +146,48 @@ func (base *Controller) DeleteUser(c *gin.Context) {
 	}
 
 	httputil.NewResponse(c, http.MethodDelete, res)
+}
+
+// UpdateScope godoc
+// @Summary Update a user's scope
+// @Description update scopes for a specific user
+// @Tags users
+// @Param data body ScopeRequest true "scopes to modify"
+// @Success 200 {object} httputil.HTTPResponse[model.User]
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /auth/users/:id/scopes [put]
+func (base *Controller) AddScopes(c *gin.Context) {
+	var req ScopeRequest
+
+	userId, err := service.GetId(c)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httputil.HandleFieldError(c, err)
+		return
+	}
+
+	keyToFind := model.APIKey{UserId: userId}
+	key, err := service.Find[model.APIKey](base.DB, keyToFind, true)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	curScopes := strings.Split(key.Scopes, ",")
+	cleanedScopes := service.Difference(curScopes, req.remove)
+	updatedScopes := append(cleanedScopes, req.add...)
+	key.Scopes = strings.Join(updatedScopes, ",")
+
+	res, err := service.Update[model.APIKey](base.DB, key.ID, *key)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	httputil.NewResponse(c, http.MethodPut, res)
 }

@@ -1,5 +1,18 @@
 basePath: /api/v1
 definitions:
+  controller.AuthRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    type: object
+  controller.ScopeRequest:
+    type: object
   httputil.HTTPError:
     properties:
       code:
@@ -9,10 +22,35 @@ definitions:
         example: status bad request
         type: string
     type: object
-  httputil.HTTPResponse-model_APIKey:
+  httputil.HTTPResponse-array_model_Product:
     properties:
       data:
-        $ref: '#/definitions/model.APIKey'
+        items:
+          $ref: '#/definitions/model.Product'
+        type: array
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-array_model_User:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_DisplayAPIKey:
+    properties:
+      data:
+        $ref: '#/definitions/model.DisplayAPIKey'
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_Product:
+    properties:
+      data:
+        $ref: '#/definitions/model.Product'
       message:
         type: string
     type: object
@@ -23,7 +61,7 @@ definitions:
       message:
         type: string
     type: object
-  model.APIKey:
+  model.DisplayAPIKey:
     properties:
       created_at:
         type: integer
@@ -32,15 +70,11 @@ definitions:
       id:
         type: string
       key:
-        items:
-          type: integer
-        type: array
+        type: string
       scopes:
         type: string
       updated_at:
         type: integer
-      user:
-        $ref: '#/definitions/model.User'
       userId:
         type: string
     type: object
@@ -127,12 +161,6 @@ definitions:
         type: string
       name:
         type: string
-      password:
-        type: string
-      rules:
-        items:
-          $ref: '#/definitions/model.Rule'
-        type: array
       updated_at:
         type: integer
     required:
@@ -166,14 +194,37 @@ info:
   title: License Server API
   version: 0.1.0
 paths:
-  /admin/users:
-    post:
-      description: add new user
+  /admin/products:
+    get:
+      description: retrieves all products
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: '#/definitions/httputil.HTTPResponse-array_model_Product'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Get all products
+      tags:
+      - products
+    post:
+      description: creates a new product
+      parameters:
+      - description: new product info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Product'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_Product'
         "400":
           description: Bad Request
           schema:
@@ -184,12 +235,96 @@ paths:
             $ref: '#/definitions/httputil.HTTPError'
       security:
       - ApiKey: []
-      summary: Add a user
+      summary: Add a product
+      tags:
+      - products
+  /admin/products/:id:
+    delete:
+      description: deletes a specific product
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      description: retrieve a specific product
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Get a product
+      tags:
+      - products
+    put:
+      description: updates a specific product
+      parameters:
+      - description: updated product info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Product'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Update a product
+      tags:
+      - products
+  /admin/users:
+    get:
+      description: retrieves all users
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-array_model_User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Get all users
       tags:
       - users
-  /auth/register:
     post:
-      description: register new application user
+      description: creates a new user
       parameters:
       - description: new user info
         in: body
@@ -210,17 +345,19 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httputil.HTTPError'
-      summary: Registers a user
+      security:
+      - ApiKey: []
+      summary: Add a user
       tags:
-      - auth
-  /auth/token:
-    post:
-      description: creates a new API key
+      - users
+  /admin/users/:id:
+    delete:
+      description: deletes a specific user
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputil.HTTPResponse-model_APIKey'
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
         "400":
           description: Bad Request
           schema:
@@ -229,9 +366,136 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httputil.HTTPError'
-      summary: Creates a token
+      security:
+      - ApiKey: []
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      description: retrieve a specific user
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Get a user
+      tags:
+      - users
+    put:
+      description: updates a specific user
+      parameters:
+      - description: updated user info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Update a user
+      tags:
+      - users
+  /auth/register:
+    post:
+      description: registers new application user
+      parameters:
+      - description: new user info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controller.AuthRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Register a user
       tags:
       - auth
+  /auth/token:
+    post:
+      description: creates a new API key
+      parameters:
+      - description: returning user info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controller.AuthRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_DisplayAPIKey'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Create a token
+      tags:
+      - auth
+  /auth/users/:id/scopes:
+    put:
+      description: update scopes for a specific user
+      parameters:
+      - description: scopes to modify
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ScopeRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Update a user's scope
+      tags:
+      - users
 schemes:
 - http
 securityDefinitions:

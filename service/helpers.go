@@ -31,14 +31,18 @@ func SetProperty[T any](obj T, propName string, propValue any) *T {
 	return &obj
 }
 
-func Unpack[T any](obj T) interface{} {
-	s := reflect.ValueOf(obj)
-	ret := make([]interface{}, s.NumField())
-	for i := 0; i < s.NumField(); i++ {
-		ret[i] = s.Field(i).Interface()
+func Difference(a, b []string) []string {
+	mb := make(map[string]struct{}, len(b))
+	for _, x := range b {
+		mb[x] = struct{}{}
 	}
-
-	return ret
+	var diff []string
+	for _, x := range a {
+		if _, found := mb[x]; !found {
+			diff = append(diff, x)
+		}
+	}
+	return diff
 }
 
 func GetId(ctx *gin.Context) (string, error) {

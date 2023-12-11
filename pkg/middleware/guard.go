@@ -20,7 +20,13 @@ func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
 
 		isAuthed, err := api.Authorize(apiKey, scopes...)
 
-		if err != nil || !isAuthed {
+		if err != nil {
+			httputil.NewError(ctx, http.StatusUnauthorized, err)
+			ctx.Abort()
+			return
+		}
+
+		if !isAuthed {
 			httputil.NewError(ctx, http.StatusUnauthorized, errors.New("unauthorized"))
 			ctx.Abort()
 			return

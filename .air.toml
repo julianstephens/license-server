@@ -13,7 +13,7 @@ delay = 1000
 # Watch these filename extensions.
 include_ext = ["go"]
 # Ignore these filename extensions or directories.
-exclude_dir = ["tmp"]
+exclude_dir = ["tmp", "docs"]
 # Exclude specific regular expressions.
 exclude_regex = ["_test\\\\.go"]
 # Save logs to file

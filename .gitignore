@@ -48,3 +48,7 @@ tmp/
 # Files
 *.out
 
+
+**/.openapi-generator/**
+**/.openapi-generator-*
+openapitools.json

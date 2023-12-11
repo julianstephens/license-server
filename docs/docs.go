@@ -15,6 +15,186 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/products": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "retrieves all products",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-array_model_Product"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "creates a new product",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Add a product",
+                "parameters": [
+                    {
+                        "description": "new product info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/products/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "retrieve a specific product",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get a product",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "updates a specific product",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update a product",
+                "parameters": [
+                    {
+                        "description": "updated product info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "deletes a specific product",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Delete a product",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "security": [
@@ -209,7 +389,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/controller.AuthRequest"
                         }
                     }
                 ],
@@ -249,7 +429,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.LoginRequest"
+                            "$ref": "#/definitions/controller.AuthRequest"
                         }
                     }
                 ],
@@ -257,7 +437,47 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputil.HTTPResponse-model_APIKey"
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_DisplayAPIKey"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/users/:id/scopes": {
+            "put": {
+                "description": "update scopes for a specific user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update a user's scope",
+                "parameters": [
+                    {
+                        "description": "scopes to modify",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ScopeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_User"
                         }
                     },
                     "400": {
@@ -277,16 +497,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controller.LoginRequest": {
+        "controller.AuthRequest": {
             "type": "object",
+            "required": [
+                "email"
+            ],
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "password": {
                     "type": "string"
                 }
             }
+        },
+        "controller.ScopeRequest": {
+            "type": "object"
         },
         "httputil.HTTPError": {
             "type": "object",
@@ -298,6 +527,20 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "status bad request"
+                }
+            }
+        },
+        "httputil.HTTPResponse-array_model_Product": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Product"
+                    }
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -315,11 +558,22 @@ const docTemplate = `{
                 }
             }
         },
-        "httputil.HTTPResponse-model_APIKey": {
+        "httputil.HTTPResponse-model_DisplayAPIKey": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.APIKey"
+                    "$ref": "#/definitions/model.DisplayAPIKey"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "httputil.HTTPResponse-model_Product": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Product"
                 },
                 "message": {
                     "type": "string"
@@ -337,7 +591,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.APIKey": {
+        "model.DisplayAPIKey": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -352,17 +606,11 @@ const docTemplate = `{
                 "key": {
                     "type": "string"
                 },
-                "mask": {
-                    "type": "string"
-                },
                 "scopes": {
                     "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
-                },
-                "user": {
-                    "$ref": "#/definitions/model.User"
                 },
                 "userId": {
                     "type": "string"
@@ -497,15 +745,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Rule"
-                    }
                 },
                 "updated_at": {
                     "type": "integer"

@@ -12,8 +12,9 @@ import (
 	"github.com/julianstephens/license-server/service"
 )
 
-type LoginRequest struct {
-	Email    string
+type AuthRequest struct {
+	Name     string `binding:"omitempty,alpha"`
+	Email    string `binding:"required,email"`
 	Password string
 }
 
@@ -21,25 +22,28 @@ type LoginRequest struct {
 // @Summary Register a user
 // @Description registers new application user
 // @Tags auth
-// @Param data body model.User true "new user info"
+// @Param data body AuthRequest true "new user info"
 // @Success 200 {object} httputil.HTTPResponse[model.User]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/register [post]
 func (base *Controller) Register(c *gin.Context) {
+	var req AuthRequest
 	var user model.User
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		httputil.HandleFieldError(c, err)
 		return
 	}
 
-	hashedPassword, err := service.HashData(user.Password)
+	hashedPassword, err := service.HashData(req.Password)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("unable to parse password"))
 		return
 	}
 
+	user.Name = req.Name
+	user.Email = req.Email
 	user.Password = hashedPassword
 
 	res, err := service.Create[model.User](base.DB, user)
@@ -59,13 +63,13 @@ func (base *Controller) Register(c *gin.Context) {
 // @Summary Create a token
 // @Description creates a new API key
 // @Tags auth
-// @Param data body LoginRequest true "returning user info"
-// @Success 200 {object} httputil.HTTPResponse[model.APIKey]
+// @Param data body AuthRequest true "returning user info"
+// @Success 200 {object} httputil.HTTPResponse[model.DisplayAPIKey]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/token [post]
 func (base *Controller) CreateToken(c *gin.Context) {
-	var req LoginRequest
+	var req AuthRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httputil.HandleFieldError(c, err)

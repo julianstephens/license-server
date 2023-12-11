@@ -10,18 +10,48 @@
     "url" : "http://localhost:8080/api/v1"
   } ],
   "paths" : {
-    "/admin/users" : {
+    "/admin/products" : {
       "get" : {
-        "description" : "creates a new user",
+        "description" : "retrieves all products",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-array_model_Product"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Get all products",
+        "tags" : [ "products" ]
+      },
+      "post" : {
+        "description" : "creates a new product",
         "requestBody" : {
           "content" : {
             "*/*" : {
               "schema" : {
-                "$ref" : "#/components/schemas/model.User"
+                "$ref" : "#/components/schemas/model.Product"
               }
             }
           },
-          "description" : "new user info",
+          "description" : "new product info",
           "required" : true
         },
         "responses" : {
@@ -29,10 +59,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "items" : {
-                    "$ref" : "#/components/schemas/model.User"
-                  },
-                  "type" : "array"
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_Product"
                 }
               }
             },
@@ -62,9 +89,175 @@
         "security" : [ {
           "ApiKey" : [ ]
         } ],
-        "summary" : "Get all users",
-        "tags" : [ "users" ],
+        "summary" : "Add a product",
+        "tags" : [ "products" ],
         "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/admin/products/:id" : {
+      "delete" : {
+        "description" : "deletes a specific product",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_Product"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Delete a product",
+        "tags" : [ "products" ]
+      },
+      "get" : {
+        "description" : "retrieve a specific product",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_Product"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Get a product",
+        "tags" : [ "products" ]
+      },
+      "put" : {
+        "description" : "updates a specific product",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.Product"
+              }
+            }
+          },
+          "description" : "updated product info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_Product"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Update a product",
+        "tags" : [ "products" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/admin/users" : {
+      "get" : {
+        "description" : "retrieves all users",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-array_model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Get all users",
+        "tags" : [ "users" ]
       },
       "post" : {
         "description" : "creates a new user",
@@ -84,7 +277,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/model.User"
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
                 }
               }
             },
@@ -119,6 +312,140 @@
         "x-codegen-request-body-name" : "data"
       }
     },
+    "/admin/users/:id" : {
+      "delete" : {
+        "description" : "deletes a specific user",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Delete a user",
+        "tags" : [ "users" ]
+      },
+      "get" : {
+        "description" : "retrieve a specific user",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Get a user",
+        "tags" : [ "users" ]
+      },
+      "put" : {
+        "description" : "updates a specific user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.User"
+              }
+            }
+          },
+          "description" : "updated user info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Update a user",
+        "tags" : [ "users" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
     "/auth/register" : {
       "post" : {
         "description" : "registers new application user",
@@ -126,7 +453,7 @@
           "content" : {
             "*/*" : {
               "schema" : {
-                "$ref" : "#/components/schemas/model.User"
+                "$ref" : "#/components/schemas/controller.AuthRequest"
               }
             }
           },
@@ -177,7 +504,7 @@
           "content" : {
             "*/*" : {
               "schema" : {
-                "$ref" : "#/components/schemas/controller.LoginRequest"
+                "$ref" : "#/components/schemas/controller.AuthRequest"
               }
             }
           },
@@ -189,7 +516,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_APIKey"
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_DisplayAPIKey"
                 }
               }
             },
@@ -220,19 +547,77 @@
         "tags" : [ "auth" ],
         "x-codegen-request-body-name" : "data"
       }
+    },
+    "/auth/users/:id/scopes" : {
+      "put" : {
+        "description" : "update scopes for a specific user",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/controller.ScopeRequest"
+              }
+            }
+          },
+          "description" : "scopes to modify",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_User"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "summary" : "Update a user's scope",
+        "tags" : [ "users" ],
+        "x-codegen-request-body-name" : "data"
+      }
     }
   },
   "components" : {
     "schemas" : {
-      "controller.LoginRequest" : {
+      "controller.AuthRequest" : {
         "properties" : {
           "email" : {
+            "type" : "string"
+          },
+          "name" : {
             "type" : "string"
           },
           "password" : {
             "type" : "string"
           }
         },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "controller.ScopeRequest" : {
         "type" : "object"
       },
       "httputil.HTTPError" : {
@@ -248,10 +633,49 @@
         },
         "type" : "object"
       },
-      "httputil.HTTPResponse-model_APIKey" : {
+      "httputil.HTTPResponse-array_model_Product" : {
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/model.APIKey"
+            "items" : {
+              "$ref" : "#/components/schemas/model.Product"
+            },
+            "type" : "array"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-array_model_User" : {
+        "properties" : {
+          "data" : {
+            "items" : {
+              "$ref" : "#/components/schemas/model.User"
+            },
+            "type" : "array"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_DisplayAPIKey" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.DisplayAPIKey"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_Product" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.Product"
           },
           "message" : {
             "type" : "string"
@@ -270,7 +694,7 @@
         },
         "type" : "object"
       },
-      "model.APIKey" : {
+      "model.DisplayAPIKey" : {
         "properties" : {
           "created_at" : {
             "type" : "integer"
@@ -284,17 +708,11 @@
           "key" : {
             "type" : "string"
           },
-          "mask" : {
-            "type" : "string"
-          },
           "scopes" : {
             "type" : "string"
           },
           "updated_at" : {
             "type" : "integer"
-          },
-          "user" : {
-            "$ref" : "#/components/schemas/model.User"
           },
           "userId" : {
             "type" : "string"
@@ -426,15 +844,6 @@
           },
           "name" : {
             "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          },
-          "rules" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.Rule"
-            },
-            "type" : "array"
           },
           "updated_at" : {
             "type" : "integer"

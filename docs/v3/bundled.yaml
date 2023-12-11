@@ -1,0 +1,2046 @@
+openapi: 3.0.1
+info:
+  contact: {}
+  description: REST API for managing software licenses
+  title: License Server API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /admin/products:
+    get:
+      description: retrieves all products
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: &ref_16
+                  data:
+                    - licenses:
+                        - product: null
+                          updated_at: 5
+                          user_id: user_id
+                          product_id: product_id
+                          created_at: 1
+                          id: id
+                          deleted_at: 5
+                          user:
+                            updated_at: 1
+                            name: name
+                            created_at: 2
+                            groups:
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                            id: id
+                            deleted_at: 7
+                            email: email
+                          value: value
+                        - product: null
+                          updated_at: 5
+                          user_id: user_id
+                          product_id: product_id
+                          created_at: 1
+                          id: id
+                          deleted_at: 5
+                          user:
+                            updated_at: 1
+                            name: name
+                            created_at: 2
+                            groups:
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                            id: id
+                            deleted_at: 7
+                            email: email
+                          value: value
+                      updated_at: 1
+                      name: name
+                      created_at: 0
+                      rules:
+                        - updated_at: 7
+                          name: name
+                          created_at: 2
+                          id: id
+                          deleted_at: 4
+                          users:
+                            - null
+                            - null
+                          products:
+                            - null
+                            - null
+                          user_groups:
+                            - null
+                            - null
+                        - updated_at: 7
+                          name: name
+                          created_at: 2
+                          id: id
+                          deleted_at: 4
+                          users:
+                            - null
+                            - null
+                          products:
+                            - null
+                            - null
+                          user_groups:
+                            - null
+                            - null
+                      id: id
+                      deleted_at: 6
+                    - licenses:
+                        - product: null
+                          updated_at: 5
+                          user_id: user_id
+                          product_id: product_id
+                          created_at: 1
+                          id: id
+                          deleted_at: 5
+                          user:
+                            updated_at: 1
+                            name: name
+                            created_at: 2
+                            groups:
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                            id: id
+                            deleted_at: 7
+                            email: email
+                          value: value
+                        - product: null
+                          updated_at: 5
+                          user_id: user_id
+                          product_id: product_id
+                          created_at: 1
+                          id: id
+                          deleted_at: 5
+                          user:
+                            updated_at: 1
+                            name: name
+                            created_at: 2
+                            groups:
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                              - updated_at: 1
+                                name: name
+                                created_at: 9
+                                rules:
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                  - updated_at: 7
+                                    name: name
+                                    created_at: 2
+                                    id: id
+                                    deleted_at: 4
+                                    users:
+                                      - null
+                                      - null
+                                    products:
+                                      - null
+                                      - null
+                                    user_groups:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 3
+                                users:
+                                  - null
+                                  - null
+                            id: id
+                            deleted_at: 7
+                            email: email
+                          value: value
+                      updated_at: 1
+                      name: name
+                      created_at: 0
+                      rules:
+                        - updated_at: 7
+                          name: name
+                          created_at: 2
+                          id: id
+                          deleted_at: 4
+                          users:
+                            - null
+                            - null
+                          products:
+                            - null
+                            - null
+                          user_groups:
+                            - null
+                            - null
+                        - updated_at: 7
+                          name: name
+                          created_at: 2
+                          id: id
+                          deleted_at: 4
+                          users:
+                            - null
+                            - null
+                          products:
+                            - null
+                            - null
+                          user_groups:
+                            - null
+                            - null
+                      id: id
+                      deleted_at: 6
+                  message: message
+                properties: &ref_17
+                  data:
+                    items:
+                      example: &ref_0
+                        licenses:
+                          - product: null
+                            updated_at: 5
+                            user_id: user_id
+                            product_id: product_id
+                            created_at: 1
+                            id: id
+                            deleted_at: 5
+                            user:
+                              updated_at: 1
+                              name: name
+                              created_at: 2
+                              groups:
+                                - updated_at: 1
+                                  name: name
+                                  created_at: 9
+                                  rules:
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                  id: id
+                                  deleted_at: 3
+                                  users:
+                                    - null
+                                    - null
+                                - updated_at: 1
+                                  name: name
+                                  created_at: 9
+                                  rules:
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                  id: id
+                                  deleted_at: 3
+                                  users:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 7
+                              email: email
+                            value: value
+                          - product: null
+                            updated_at: 5
+                            user_id: user_id
+                            product_id: product_id
+                            created_at: 1
+                            id: id
+                            deleted_at: 5
+                            user:
+                              updated_at: 1
+                              name: name
+                              created_at: 2
+                              groups:
+                                - updated_at: 1
+                                  name: name
+                                  created_at: 9
+                                  rules:
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                  id: id
+                                  deleted_at: 3
+                                  users:
+                                    - null
+                                    - null
+                                - updated_at: 1
+                                  name: name
+                                  created_at: 9
+                                  rules:
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                    - updated_at: 7
+                                      name: name
+                                      created_at: 2
+                                      id: id
+                                      deleted_at: 4
+                                      users:
+                                        - null
+                                        - null
+                                      products:
+                                        - null
+                                        - null
+                                      user_groups:
+                                        - null
+                                        - null
+                                  id: id
+                                  deleted_at: 3
+                                  users:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 7
+                              email: email
+                            value: value
+                        updated_at: 1
+                        name: name
+                        created_at: 0
+                        rules:
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                        id: id
+                        deleted_at: 6
+                      properties: &ref_1
+                        created_at:
+                          type: integer
+                        deleted_at:
+                          type: integer
+                        id:
+                          type: string
+                        licenses:
+                          items:
+                            example: &ref_24
+                              product: null
+                              updated_at: 5
+                              user_id: user_id
+                              product_id: product_id
+                              created_at: 1
+                              id: id
+                              deleted_at: 5
+                              user:
+                                updated_at: 1
+                                name: name
+                                created_at: 2
+                                groups:
+                                  - updated_at: 1
+                                    name: name
+                                    created_at: 9
+                                    rules:
+                                      - updated_at: 7
+                                        name: name
+                                        created_at: 2
+                                        id: id
+                                        deleted_at: 4
+                                        users:
+                                          - null
+                                          - null
+                                        products:
+                                          - null
+                                          - null
+                                        user_groups:
+                                          - null
+                                          - null
+                                      - updated_at: 7
+                                        name: name
+                                        created_at: 2
+                                        id: id
+                                        deleted_at: 4
+                                        users:
+                                          - null
+                                          - null
+                                        products:
+                                          - null
+                                          - null
+                                        user_groups:
+                                          - null
+                                          - null
+                                    id: id
+                                    deleted_at: 3
+                                    users:
+                                      - null
+                                      - null
+                                  - updated_at: 1
+                                    name: name
+                                    created_at: 9
+                                    rules:
+                                      - updated_at: 7
+                                        name: name
+                                        created_at: 2
+                                        id: id
+                                        deleted_at: 4
+                                        users:
+                                          - null
+                                          - null
+                                        products:
+                                          - null
+                                          - null
+                                        user_groups:
+                                          - null
+                                          - null
+                                      - updated_at: 7
+                                        name: name
+                                        created_at: 2
+                                        id: id
+                                        deleted_at: 4
+                                        users:
+                                          - null
+                                          - null
+                                        products:
+                                          - null
+                                          - null
+                                        user_groups:
+                                          - null
+                                          - null
+                                    id: id
+                                    deleted_at: 3
+                                    users:
+                                      - null
+                                      - null
+                                id: id
+                                deleted_at: 7
+                                email: email
+                              value: value
+                            properties: &ref_25
+                              created_at:
+                                type: integer
+                              deleted_at:
+                                type: integer
+                              id:
+                                type: string
+                              product:
+                                example: *ref_0
+                                properties: *ref_1
+                                type: object
+                              product_id:
+                                type: string
+                              updated_at:
+                                type: integer
+                              user:
+                                example: &ref_4
+                                  updated_at: 1
+                                  name: name
+                                  created_at: 2
+                                  groups:
+                                    - updated_at: 1
+                                      name: name
+                                      created_at: 9
+                                      rules:
+                                        - updated_at: 7
+                                          name: name
+                                          created_at: 2
+                                          id: id
+                                          deleted_at: 4
+                                          users:
+                                            - null
+                                            - null
+                                          products:
+                                            - null
+                                            - null
+                                          user_groups:
+                                            - null
+                                            - null
+                                        - updated_at: 7
+                                          name: name
+                                          created_at: 2
+                                          id: id
+                                          deleted_at: 4
+                                          users:
+                                            - null
+                                            - null
+                                          products:
+                                            - null
+                                            - null
+                                          user_groups:
+                                            - null
+                                            - null
+                                      id: id
+                                      deleted_at: 3
+                                      users:
+                                        - null
+                                        - null
+                                    - updated_at: 1
+                                      name: name
+                                      created_at: 9
+                                      rules:
+                                        - updated_at: 7
+                                          name: name
+                                          created_at: 2
+                                          id: id
+                                          deleted_at: 4
+                                          users:
+                                            - null
+                                            - null
+                                          products:
+                                            - null
+                                            - null
+                                          user_groups:
+                                            - null
+                                            - null
+                                        - updated_at: 7
+                                          name: name
+                                          created_at: 2
+                                          id: id
+                                          deleted_at: 4
+                                          users:
+                                            - null
+                                            - null
+                                          products:
+                                            - null
+                                            - null
+                                          user_groups:
+                                            - null
+                                            - null
+                                      id: id
+                                      deleted_at: 3
+                                      users:
+                                        - null
+                                        - null
+                                  id: id
+                                  deleted_at: 7
+                                  email: email
+                                properties: &ref_5
+                                  created_at:
+                                    type: integer
+                                  deleted_at:
+                                    type: integer
+                                  email:
+                                    type: string
+                                  groups:
+                                    items:
+                                      example: &ref_2
+                                        updated_at: 1
+                                        name: name
+                                        created_at: 9
+                                        rules:
+                                          - updated_at: 7
+                                            name: name
+                                            created_at: 2
+                                            id: id
+                                            deleted_at: 4
+                                            users:
+                                              - null
+                                              - null
+                                            products:
+                                              - null
+                                              - null
+                                            user_groups:
+                                              - null
+                                              - null
+                                          - updated_at: 7
+                                            name: name
+                                            created_at: 2
+                                            id: id
+                                            deleted_at: 4
+                                            users:
+                                              - null
+                                              - null
+                                            products:
+                                              - null
+                                              - null
+                                            user_groups:
+                                              - null
+                                              - null
+                                        id: id
+                                        deleted_at: 3
+                                        users:
+                                          - null
+                                          - null
+                                      properties: &ref_3
+                                        created_at:
+                                          type: integer
+                                        deleted_at:
+                                          type: integer
+                                        id:
+                                          type: string
+                                        name:
+                                          type: string
+                                        rules:
+                                          items:
+                                            example: &ref_7
+                                              updated_at: 7
+                                              name: name
+                                              created_at: 2
+                                              id: id
+                                              deleted_at: 4
+                                              users:
+                                                - null
+                                                - null
+                                              products:
+                                                - null
+                                                - null
+                                              user_groups:
+                                                - null
+                                                - null
+                                            properties: &ref_8
+                                              created_at:
+                                                type: integer
+                                              deleted_at:
+                                                type: integer
+                                              id:
+                                                type: string
+                                              name:
+                                                type: string
+                                              products:
+                                                items:
+                                                  example: *ref_0
+                                                  properties: *ref_1
+                                                  type: object
+                                                type: array
+                                              updated_at:
+                                                type: integer
+                                              user_groups:
+                                                items:
+                                                  example: *ref_2
+                                                  properties: *ref_3
+                                                  type: object
+                                                type: array
+                                              users:
+                                                items:
+                                                  example: *ref_4
+                                                  properties: *ref_5
+                                                  required: &ref_6
+                                                    - email
+                                                  type: object
+                                                type: array
+                                            type: object
+                                          type: array
+                                        updated_at:
+                                          type: integer
+                                        users:
+                                          items:
+                                            example: *ref_4
+                                            properties: *ref_5
+                                            required: *ref_6
+                                            type: object
+                                          type: array
+                                      type: object
+                                    type: array
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  updated_at:
+                                    type: integer
+                                required: *ref_6
+                                type: object
+                              user_id:
+                                type: string
+                              value:
+                                type: string
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        rules:
+                          items:
+                            example: *ref_7
+                            properties: *ref_8
+                            type: object
+                          type: array
+                        updated_at:
+                          type: integer
+                      type: object
+                    type: array
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: &ref_9
+                  code:
+                    example: 400
+                    type: integer
+                  message:
+                    example: status bad request
+                    type: string
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Get all products
+      tags:
+        - products
+    post:
+      description: creates a new product
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              example: *ref_0
+              properties: *ref_1
+              type: object
+        description: new product info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: &ref_10
+                  data:
+                    licenses:
+                      - product: null
+                        updated_at: 5
+                        user_id: user_id
+                        product_id: product_id
+                        created_at: 1
+                        id: id
+                        deleted_at: 5
+                        user:
+                          updated_at: 1
+                          name: name
+                          created_at: 2
+                          groups:
+                            - updated_at: 1
+                              name: name
+                              created_at: 9
+                              rules:
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 3
+                              users:
+                                - null
+                                - null
+                            - updated_at: 1
+                              name: name
+                              created_at: 9
+                              rules:
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 3
+                              users:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 7
+                          email: email
+                        value: value
+                      - product: null
+                        updated_at: 5
+                        user_id: user_id
+                        product_id: product_id
+                        created_at: 1
+                        id: id
+                        deleted_at: 5
+                        user:
+                          updated_at: 1
+                          name: name
+                          created_at: 2
+                          groups:
+                            - updated_at: 1
+                              name: name
+                              created_at: 9
+                              rules:
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 3
+                              users:
+                                - null
+                                - null
+                            - updated_at: 1
+                              name: name
+                              created_at: 9
+                              rules:
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                                - updated_at: 7
+                                  name: name
+                                  created_at: 2
+                                  id: id
+                                  deleted_at: 4
+                                  users:
+                                    - null
+                                    - null
+                                  products:
+                                    - null
+                                    - null
+                                  user_groups:
+                                    - null
+                                    - null
+                              id: id
+                              deleted_at: 3
+                              users:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 7
+                          email: email
+                        value: value
+                    updated_at: 1
+                    name: name
+                    created_at: 0
+                    rules:
+                      - updated_at: 7
+                        name: name
+                        created_at: 2
+                        id: id
+                        deleted_at: 4
+                        users:
+                          - null
+                          - null
+                        products:
+                          - null
+                          - null
+                        user_groups:
+                          - null
+                          - null
+                      - updated_at: 7
+                        name: name
+                        created_at: 2
+                        id: id
+                        deleted_at: 4
+                        users:
+                          - null
+                          - null
+                        products:
+                          - null
+                          - null
+                        user_groups:
+                          - null
+                          - null
+                    id: id
+                    deleted_at: 6
+                  message: message
+                properties: &ref_11
+                  data:
+                    example: *ref_0
+                    properties: *ref_1
+                    type: object
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Add a product
+      tags:
+        - products
+      x-codegen-request-body-name: data
+  /admin/products/:id:
+    delete:
+      description: deletes a specific product
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_10
+                properties: *ref_11
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Delete a product
+      tags:
+        - products
+    get:
+      description: retrieve a specific product
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_10
+                properties: *ref_11
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Get a product
+      tags:
+        - products
+    put:
+      description: updates a specific product
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              example: *ref_0
+              properties: *ref_1
+              type: object
+        description: updated product info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_10
+                properties: *ref_11
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Update a product
+      tags:
+        - products
+      x-codegen-request-body-name: data
+  /admin/users:
+    get:
+      description: retrieves all users
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: &ref_18
+                  data:
+                    - updated_at: 1
+                      name: name
+                      created_at: 2
+                      groups:
+                        - updated_at: 1
+                          name: name
+                          created_at: 9
+                          rules:
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 3
+                          users:
+                            - null
+                            - null
+                        - updated_at: 1
+                          name: name
+                          created_at: 9
+                          rules:
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 3
+                          users:
+                            - null
+                            - null
+                      id: id
+                      deleted_at: 7
+                      email: email
+                    - updated_at: 1
+                      name: name
+                      created_at: 2
+                      groups:
+                        - updated_at: 1
+                          name: name
+                          created_at: 9
+                          rules:
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 3
+                          users:
+                            - null
+                            - null
+                        - updated_at: 1
+                          name: name
+                          created_at: 9
+                          rules:
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                            - updated_at: 7
+                              name: name
+                              created_at: 2
+                              id: id
+                              deleted_at: 4
+                              users:
+                                - null
+                                - null
+                              products:
+                                - null
+                                - null
+                              user_groups:
+                                - null
+                                - null
+                          id: id
+                          deleted_at: 3
+                          users:
+                            - null
+                            - null
+                      id: id
+                      deleted_at: 7
+                      email: email
+                  message: message
+                properties: &ref_19
+                  data:
+                    items:
+                      example: *ref_4
+                      properties: *ref_5
+                      required: *ref_6
+                      type: object
+                    type: array
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Get all users
+      tags:
+        - users
+    post:
+      description: creates a new user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              example: *ref_4
+              properties: *ref_5
+              required: *ref_6
+              type: object
+        description: new user info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: &ref_12
+                  data:
+                    updated_at: 1
+                    name: name
+                    created_at: 2
+                    groups:
+                      - updated_at: 1
+                        name: name
+                        created_at: 9
+                        rules:
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                        id: id
+                        deleted_at: 3
+                        users:
+                          - null
+                          - null
+                      - updated_at: 1
+                        name: name
+                        created_at: 9
+                        rules:
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                          - updated_at: 7
+                            name: name
+                            created_at: 2
+                            id: id
+                            deleted_at: 4
+                            users:
+                              - null
+                              - null
+                            products:
+                              - null
+                              - null
+                            user_groups:
+                              - null
+                              - null
+                        id: id
+                        deleted_at: 3
+                        users:
+                          - null
+                          - null
+                    id: id
+                    deleted_at: 7
+                    email: email
+                  message: message
+                properties: &ref_13
+                  data:
+                    example: *ref_4
+                    properties: *ref_5
+                    required: *ref_6
+                    type: object
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Add a user
+      tags:
+        - users
+      x-codegen-request-body-name: data
+  /admin/users/:id:
+    delete:
+      description: deletes a specific user
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_12
+                properties: *ref_13
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Delete a user
+      tags:
+        - users
+    get:
+      description: retrieve a specific user
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_12
+                properties: *ref_13
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Get a user
+      tags:
+        - users
+    put:
+      description: updates a specific user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              example: *ref_4
+              properties: *ref_5
+              required: *ref_6
+              type: object
+        description: updated user info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_12
+                properties: *ref_13
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      security:
+        - ApiKey: []
+      summary: Update a user
+      tags:
+        - users
+      x-codegen-request-body-name: data
+  /auth/register:
+    post:
+      description: registers new application user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              properties: &ref_14
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+              required: &ref_15
+                - email
+              type: object
+        description: new user info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_12
+                properties: *ref_13
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      summary: Register a user
+      tags:
+        - auth
+      x-codegen-request-body-name: data
+  /auth/token:
+    post:
+      description: creates a new API key
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              properties: *ref_14
+              required: *ref_15
+              type: object
+        description: returning user info
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: &ref_20
+                  data:
+                    updated_at: 1
+                    created_at: 0
+                    id: id
+                    scopes: scopes
+                    deleted_at: 6
+                    userId: userId
+                    key: key
+                  message: message
+                properties: &ref_21
+                  data:
+                    example: &ref_22
+                      updated_at: 1
+                      created_at: 0
+                      id: id
+                      scopes: scopes
+                      deleted_at: 6
+                      userId: userId
+                      key: key
+                    properties: &ref_23
+                      created_at:
+                        type: integer
+                      deleted_at:
+                        type: integer
+                      id:
+                        type: string
+                      key:
+                        type: string
+                      scopes:
+                        type: string
+                      updated_at:
+                        type: integer
+                      userId:
+                        type: string
+                    type: object
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      summary: Create a token
+      tags:
+        - auth
+      x-codegen-request-body-name: data
+  /auth/users/:id/scopes:
+    put:
+      description: update scopes for a specific user
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+        description: scopes to modify
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                example: *ref_12
+                properties: *ref_13
+                type: object
+          description: OK
+        '400':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Bad Request
+        '500':
+          content:
+            '*/*':
+              schema:
+                properties: *ref_9
+                type: object
+          description: Internal Server Error
+      summary: Update a user's scope
+      tags:
+        - users
+      x-codegen-request-body-name: data
+components:
+  schemas:
+    controller.AuthRequest:
+      properties: *ref_14
+      required: *ref_15
+      type: object
+    controller.ScopeRequest:
+      type: object
+    httputil.HTTPError:
+      properties: *ref_9
+      type: object
+    httputil.HTTPResponse-array_model_Product:
+      example: *ref_16
+      properties: *ref_17
+      type: object
+    httputil.HTTPResponse-array_model_User:
+      example: *ref_18
+      properties: *ref_19
+      type: object
+    httputil.HTTPResponse-model_DisplayAPIKey:
+      example: *ref_20
+      properties: *ref_21
+      type: object
+    httputil.HTTPResponse-model_Product:
+      example: *ref_10
+      properties: *ref_11
+      type: object
+    httputil.HTTPResponse-model_User:
+      example: *ref_12
+      properties: *ref_13
+      type: object
+    model.DisplayAPIKey:
+      example: *ref_22
+      properties: *ref_23
+      type: object
+    model.License:
+      example: *ref_24
+      properties: *ref_25
+      type: object
+    model.Product:
+      example: *ref_0
+      properties: *ref_1
+      type: object
+    model.Rule:
+      example: *ref_7
+      properties: *ref_8
+      type: object
+    model.User:
+      example: *ref_4
+      properties: *ref_5
+      required: *ref_6
+      type: object
+    model.UserGroup:
+      example: *ref_2
+      properties: *ref_3
+      type: object
+  securitySchemes:
+    ApiKey:
+      in: header
+      name: X-API-KEY
+      type: apiKey
+x-original-swagger-version: '2.0'
