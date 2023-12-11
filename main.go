@@ -11,6 +11,7 @@ import (
 	"github.com/julianstephens/license-server/pkg/config"
 	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/redis"
 	"github.com/julianstephens/license-server/pkg/router"
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
@@ -47,9 +48,17 @@ func main() {
 		appLogger.Error("could not connect to database", err)
 		os.Exit(1)
 	}
-	db := database.GetDB()
 
-	r := router.Setup(db)
+	err = redis.Init()
+	if err != nil {
+		appLogger.Error("could not connect to redis server", err)
+		os.Exit(1)
+	}
+
+	db := database.GetDB()
+	rdb := redis.GetStore()
+
+	r := router.Setup(db, rdb)
 
 	r.GET("/api/v1/docs/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler),

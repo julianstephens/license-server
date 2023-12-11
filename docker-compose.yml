@@ -16,6 +16,14 @@ services:
       # - ./backend/database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       # named volume
       - ls-pg-data:/var/lib/postgresql/data
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    hostname: redis
+    ports:
+      - 6379:6379
+      - 8001:8001
+    restart: always
   app:
     container_name: app
     build:

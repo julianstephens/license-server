@@ -3,7 +3,10 @@ package router
 import (
 	"fmt"
 	"net/http"
+	"time"
 
+	cache "github.com/chenyahui/gin-cache"
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/controller"
@@ -18,7 +21,7 @@ const BasePath = "/api/v1"
 
 var apiLogger = logger.GetLogger()
 
-func Setup(db *gorm.DB) *gin.Engine {
+func Setup(db *gorm.DB, rdb *persist.RedisStore) *gin.Engine {
 	r := gin.New()
 
 	routerLogger := logger.GetLogger()
@@ -27,6 +30,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 	r.Use(gin.Recovery())
 
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.Use(cache.CacheByRequestURI(rdb, 2*time.Minute))
 
 	docs.SwaggerInfo.BasePath = BasePath
 
