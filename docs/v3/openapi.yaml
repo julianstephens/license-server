@@ -1042,12 +1042,13 @@ components:
     httputil.HTTPResponse-model_DisplayAPIKey:
       example:
         data:
+          authentication_scopes: authentication_scopes
+          expires_at: expires_at
           updated_at: 1
+          user_id: user_id
           created_at: 0
           id: id
-          scopes: scopes
           deleted_at: 6
-          userId: userId
           key: key
         message: message
       properties:
@@ -1469,27 +1470,30 @@ components:
       type: object
     model.DisplayAPIKey:
       example:
+        authentication_scopes: authentication_scopes
+        expires_at: expires_at
         updated_at: 1
+        user_id: user_id
         created_at: 0
         id: id
-        scopes: scopes
         deleted_at: 6
-        userId: userId
         key: key
       properties:
+        authentication_scopes:
+          type: string
         created_at:
           type: integer
         deleted_at:
           type: integer
+        expires_at:
+          type: string
         id:
           type: string
         key:
           type: string
-        scopes:
-          type: string
         updated_at:
           type: integer
-        userId:
+        user_id:
           type: string
       type: object
     model.License:

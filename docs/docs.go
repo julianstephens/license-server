@@ -619,11 +619,17 @@ const docTemplate = `{
         "model.DisplayAPIKey": {
             "type": "object",
             "properties": {
+                "authentication_scopes": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "integer"
                 },
                 "deleted_at": {
                     "type": "integer"
+                },
+                "expires_at": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -631,13 +637,10 @@ const docTemplate = `{
                 "key": {
                     "type": "string"
                 },
-                "scopes": {
-                    "type": "string"
-                },
                 "updated_at": {
                     "type": "integer"
                 },
-                "userId": {
+                "user_id": {
                     "type": "string"
                 }
             }

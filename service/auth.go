@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/julianstephens/license-server/model"
@@ -60,7 +61,7 @@ func GenerateKey(db *gorm.DB, userID string) (*model.DisplayAPIKey, error) {
 	}
 
 	err = db.Save(key).Error
-	return &model.DisplayAPIKey{UserId: userID, Key: apiKey, Mask: apiKey[:6]}, err
+	return &model.DisplayAPIKey{Base: key.Base, UserId: userID, Key: apiKey, Mask: apiKey[:6], ExpiresAt: time.Unix(key.ExpiresAt, 0).Local().String()}, err
 }
 
 func FindByKey(db *gorm.DB, key string) (*model.APIKey, error) {

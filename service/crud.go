@@ -26,8 +26,6 @@ func Find[T any](db *gorm.DB, conditions T, preloadOpts *PreloadOptions) (*T, er
 		if err := db.Preload(preloadOpts.PreloadQuery).Where(conditions).First(&result).Error; err != nil {
 			return nil, err
 		}
-
-		return &result, nil
 	}
 
 	if err := db.Where(conditions).First(&result).Error; err != nil {

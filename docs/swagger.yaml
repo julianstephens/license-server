@@ -79,19 +79,21 @@ definitions:
     type: object
   model.DisplayAPIKey:
     properties:
+      authentication_scopes:
+        type: string
       created_at:
         type: integer
       deleted_at:
         type: integer
+      expires_at:
+        type: string
       id:
         type: string
       key:
         type: string
-      scopes:
-        type: string
       updated_at:
         type: integer
-      userId:
+      user_id:
         type: string
     type: object
   model.License:

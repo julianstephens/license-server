@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/controller"
 	docs "github.com/julianstephens/license-server/docs"
+	"github.com/julianstephens/license-server/middleware"
 	"github.com/julianstephens/license-server/pkg/logger"
-	"github.com/julianstephens/license-server/pkg/middleware"
 	sloggin "github.com/samber/slog-gin"
 	"gorm.io/gorm"
 )
