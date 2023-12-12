@@ -2,15 +2,17 @@ package router
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/controller"
 	docs "github.com/julianstephens/license-server/docs"
-	"github.com/julianstephens/license-server/middleware"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/middleware"
 	sloggin "github.com/samber/slog-gin"
 	"gorm.io/gorm"
 )
@@ -21,6 +23,13 @@ var apiLogger = logger.GetLogger()
 
 func Setup(db *gorm.DB, rdb *persist.RedisStore) *gin.Engine {
 	r := gin.New()
+
+	f, err := os.OpenFile("ls.access.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		logger.Errorf("Failed to create access log file: %v", err)
+	} else {
+		gin.DefaultWriter = io.MultiWriter(f)
+	}
 
 	routerLogger := logger.GetLogger()
 
@@ -47,6 +56,15 @@ func Setup(db *gorm.DB, rdb *persist.RedisStore) *gin.Engine {
 		{
 			auth.POST("/register", api.Register)
 			auth.POST("/token", api.CreateToken)
+		}
+	}
+
+	protectedGroup := r.Group(BasePath, middleware.AuthGuard(api))
+	{
+		licenseGroup := protectedGroup.Group("/licenses")
+		{
+			licenseGroup.GET("/issue", api.IssueLicense)
+			licenseGroup.POST("/validate", api.ValidateLicense)
 		}
 	}
 

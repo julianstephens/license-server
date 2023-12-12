@@ -13,7 +13,7 @@ import (
 )
 
 type AuthRequest struct {
-	Name     string `binding:"omitempty,alpha"`
+	Name     string `binding:"omitempty"`
 	Email    string `binding:"required,email"`
 	Password string
 }

@@ -598,6 +598,90 @@
         "tags" : [ "auth" ],
         "x-codegen-request-body-name" : "data"
       }
+    },
+    "/licenses/issue" : {
+      "get" : {
+        "description" : "issues a new product license",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-any"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Issue a license",
+        "tags" : [ "licenses" ]
+      }
+    },
+    "/licenses/validate" : {
+      "post" : {
+        "description" : "validates a product license",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-any"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Validate a license",
+        "tags" : [ "licenses" ]
+      }
     }
   },
   "components" : {
@@ -642,6 +726,17 @@
           },
           "message" : {
             "example" : "status bad request",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-any" : {
+        "properties" : {
+          "data" : {
+            "type" : "object"
+          },
+          "message" : {
             "type" : "string"
           }
         },
@@ -808,6 +903,9 @@
           },
           "updated_at" : {
             "type" : "integer"
+          },
+          "version" : {
+            "type" : "string"
           }
         },
         "type" : "object"

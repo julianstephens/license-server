@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"os"
-
-	"log/slog"
 
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/pkg/config"
@@ -16,10 +12,6 @@ import (
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-)
-
-var (
-	appLogger *slog.Logger
 )
 
 //	@title			License Server API
@@ -34,25 +26,16 @@ var (
 // @name X-API-KEY
 // @descripition User-specific API key
 func main() {
-	logger.Setup()
-	appLogger = logger.GetLogger()
-
-	err := config.Setup()
-	if err != nil {
-		appLogger.Error("Could not setup config", err)
-		os.Exit(1)
+	if err := config.Setup(); err != nil {
+		logger.Fatalf("Could not setup config: %s", err)
 	}
 
-	err = database.Setup()
-	if err != nil {
-		appLogger.Error("could not connect to database", err)
-		os.Exit(1)
+	if err := database.Setup(); err != nil {
+		logger.Fatalf("could not connect to database: %s", err)
 	}
 
-	err = redis.Init()
-	if err != nil {
-		appLogger.Error("could not connect to redis server", err)
-		os.Exit(1)
+	if err := redis.Init(); err != nil {
+		logger.Fatalf("could not connect to redis server: %s", err)
 	}
 
 	db := database.GetDB()
@@ -78,10 +61,6 @@ func main() {
 		port = p
 	}
 
-	appLogger.Info(fmt.Sprintf("Licensing Server starting at %s:%s", host, port))
-	err = r.Run(host + ":" + port)
-	if err != nil {
-		appLogger.Error("Could not start server", err)
-		os.Exit(1)
-	}
+	logger.Infof("Licensing Server starting at %s:%s", host, port)
+	logger.Fatalf("%v", r.Run(host+":"+port))
 }

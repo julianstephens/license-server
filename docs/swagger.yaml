@@ -31,6 +31,12 @@ definitions:
         example: status bad request
         type: string
     type: object
+  httputil.HTTPResponse-any:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
   httputil.HTTPResponse-array_model_Product:
     properties:
       data:
@@ -137,6 +143,8 @@ definitions:
         type: array
       updated_at:
         type: integer
+      version:
+        type: string
     type: object
   model.Rule:
     properties:
@@ -521,6 +529,48 @@ paths:
       summary: Create a token
       tags:
       - auth
+  /licenses/issue:
+    get:
+      description: issues a new product license
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Issue a license
+      tags:
+      - licenses
+  /licenses/validate:
+    post:
+      description: validates a product license
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Validate a license
+      tags:
+      - licenses
 schemes:
 - http
 securityDefinitions:

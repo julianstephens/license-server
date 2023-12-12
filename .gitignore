@@ -48,7 +48,10 @@ tmp/
 # Files
 *.out
 
+# Logs
+**/*.log
 
+# OpenAPI
 **/.openapi-generator/**
 **/.openapi-generator-*
 openapitools.json
