@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/julianstephens/license-server/pkg/config"
+	"github.com/julianstephens/license-server/config"
+	"github.com/julianstephens/license-server/internal/router"
 	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/logger"
 	"github.com/julianstephens/license-server/pkg/redis"
-	"github.com/julianstephens/license-server/pkg/router"
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

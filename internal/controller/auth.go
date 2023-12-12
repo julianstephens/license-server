@@ -7,8 +7,8 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/julianstephens/license-server/model"
-	"github.com/julianstephens/license-server/pkg/httputil"
+	"github.com/julianstephens/license-server/internal/controller/httputil"
+	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/service"
 )
 

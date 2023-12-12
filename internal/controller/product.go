@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/julianstephens/license-server/model"
-	"github.com/julianstephens/license-server/pkg/httputil"
+	"github.com/julianstephens/license-server/internal/controller/httputil"
+	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/service"
 	"github.com/mitchellh/mapstructure"
 )

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/julianstephens/license-server/controller"
-	"github.com/julianstephens/license-server/pkg/httputil"
+	"github.com/julianstephens/license-server/internal/controller"
+	"github.com/julianstephens/license-server/internal/controller/httputil"
 )
 
 func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
