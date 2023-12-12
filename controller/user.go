@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/julianstephens/license-server/model"
 	"github.com/julianstephens/license-server/pkg/httputil"
 	"github.com/julianstephens/license-server/service"
-	"github.com/mitchellh/mapstructure"
 )
 
 type ScopeRequest struct {
@@ -124,8 +124,14 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var decoded map[string]any
-	if err := mapstructure.Decode(user, decoded); err != nil {
+	var decoded map[string]interface{}
+	b, err := jsoniter.Marshal(user)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+	err = jsoniter.Unmarshal(b, &decoded)
+	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
 	}

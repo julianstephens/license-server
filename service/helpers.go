@@ -5,6 +5,8 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Item struct {
@@ -36,9 +38,8 @@ func StructItems[T any](obj T) []Item {
 	return res
 }
 
-func SetProperty[T any](obj T, propName string, propValue any) *T {
-	reflect.ValueOf(obj).Elem().FieldByName(propName).Set(reflect.ValueOf(propValue))
-	return &obj
+func SetProperty[T any](obj T, propName string, propValue any) {
+	reflect.ValueOf(obj).Elem().FieldByName(cases.Title(language.English, cases.Compact).String(propName)).Set(reflect.ValueOf(propValue))
 }
 
 func Difference(a, b []string) []string {

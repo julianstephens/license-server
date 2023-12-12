@@ -181,8 +181,6 @@ definitions:
         type: string
       updated_at:
         type: integer
-    required:
-    - email
     type: object
   model.UserGroup:
     properties:

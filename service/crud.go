@@ -52,21 +52,17 @@ func Create[T any](db *gorm.DB, newResource T, conditions ...T) (*T, error) {
 	return &newResource, nil
 }
 
-func Update[T any](db *gorm.DB, id string, updates map[string]any) (*T, error) {
+func Update[T any](db *gorm.DB, id string, updates map[string]any) (T, error) {
 	existing, err := FindById[T](db, id)
 	if err != nil {
-		return nil, err
+		return *new(T), err
 	}
 
-	for key, val := range updates {
-		SetProperty(existing, key, val)
+	if err := db.Model(&existing).Updates(updates).Error; err != nil {
+		return *new(T), err
 	}
 
-	if err := db.Save(&existing).Error; err != nil {
-		return nil, err
-	}
-
-	return existing, nil
+	return *existing, nil
 }
 
 func Delete[T any](db *gorm.DB, id string, res T) (*T, error) {

@@ -749,9 +749,6 @@ const docTemplate = `{
         },
         "model.User": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "created_at": {
                     "type": "integer"

@@ -7,10 +7,10 @@ import (
 
 // Base contains common columns for all tables.
 type Base struct {
-	ID        string `gorm:"primary_key;" json:"id"`
-	CreatedAt int    `json:"created_at"`
-	UpdatedAt int    `json:"updated_at"`
-	DeletedAt *int   `gorm:"index" json:"deleted_at"`
+	ID        string `gorm:"primary_key;" json:"id,omitempty"`
+	CreatedAt int    `json:"created_at,omitempty"`
+	UpdatedAt int    `json:"updated_at,omitempty"`
+	DeletedAt *int   `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.
