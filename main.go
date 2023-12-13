@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,6 @@ import (
 	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/logger"
 	"github.com/julianstephens/license-server/pkg/redis"
-	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -29,8 +29,9 @@ func main() {
 	if err := config.Setup(); err != nil {
 		logger.Fatalf("Could not setup config: %s", err)
 	}
+	conf := config.GetConfig()
 
-	if err := database.Setup(); err != nil {
+	if err := database.Setup(conf); err != nil {
 		logger.Fatalf("could not connect to database: %s", err)
 	}
 
@@ -54,11 +55,11 @@ func main() {
 	host := "0.0.0.0"
 	port := "8080"
 
-	if h := viper.GetString("server_host"); h != "" {
+	if h := conf.Server.Host; h != "" {
 		host = h
 	}
-	if p := viper.GetString("server_port"); p != "" {
-		port = p
+	if p := conf.Server.Port; p > 0 {
+		port = fmt.Sprint(p)
 	}
 
 	logger.Infof("Licensing Server starting at %s:%s", host, port)

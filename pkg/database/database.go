@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/julianstephens/license-server/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -23,9 +23,9 @@ type Database struct {
 	*gorm.DB
 }
 
-func Setup() error {
+func Setup(conf *model.Config) error {
 	var db *gorm.DB
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", viper.GetString("postgres_host"), viper.GetString("postgres_user"), viper.GetString("postgres_password"), viper.GetString("postgres_db"), "5432")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", conf.Database.Host, conf.Database.User, conf.Database.Password, conf.Database.DB, conf.Database.Port)
 
 	newDBLogger := logger.New(
 		log.New(getWriter(), "\r\n", log.LstdFlags), // io writer

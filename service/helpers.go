@@ -63,3 +63,7 @@ func GetId(ctx *gin.Context) (string, error) {
 	}
 	return id, nil
 }
+
+func DeleteElement[T any](slice []T, index int) []T {
+	return append(slice[:index], slice[index+1:]...)
+}
