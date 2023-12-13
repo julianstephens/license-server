@@ -7,7 +7,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/julianstephens/license-server/internal/keypair"
 	"github.com/julianstephens/license-server/internal/model"
-	"github.com/julianstephens/license-server/service"
+	"github.com/julianstephens/license-server/internal/service"
 )
 
 type LicenseManager struct {

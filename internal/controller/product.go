@@ -7,7 +7,7 @@ import (
 	"github.com/julianstephens/license-server/internal/controller/httputil"
 	"github.com/julianstephens/license-server/internal/licensemanager"
 	"github.com/julianstephens/license-server/internal/model"
-	"github.com/julianstephens/license-server/service"
+	"github.com/julianstephens/license-server/internal/service"
 	"github.com/mitchellh/mapstructure"
 )
 
