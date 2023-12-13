@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"log/slog"
-
+	"github.com/julianstephens/license-server/internal/model"
 	"gorm.io/gorm"
 )
 
 type Controller struct {
 	DB     *gorm.DB
-	Logger *slog.Logger
+	Config *model.Config
 }

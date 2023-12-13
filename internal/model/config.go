@@ -12,7 +12,8 @@ type Server struct {
 	Host    string `mapstructure:"host"`
 	Port    int    `mapstructure:"port"`
 	Env     string `mapstructure:"env"`
-	KeyPath string `mapstructure:"keypath"`
+	KeyFile string `mapstructure:"keyfile"`
+	OutDir  string `mapstructure:"outdir"`
 }
 
 type Config struct {

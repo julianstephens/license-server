@@ -32,7 +32,6 @@ func (ec *EllipticCurve) GenerateKeys() (*ecdsa.PrivateKey, *ecdsa.PublicKey, er
 
 	ec.privateKey = privateKey
 	ec.publicKey = &privateKey.PublicKey
-
 	return privateKey, &privateKey.PublicKey, nil
 }
 

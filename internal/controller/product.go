@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/internal/controller/httputil"
+	"github.com/julianstephens/license-server/internal/licensemanager"
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/service"
 	"github.com/mitchellh/mapstructure"
@@ -142,4 +143,28 @@ func (base *Controller) DeleteProduct(c *gin.Context) {
 	}
 
 	httputil.NewResponse(c, http.MethodDelete, res)
+}
+
+func (base *Controller) CreateProductKeyPair(c *gin.Context) {
+	lm := licensemanager.LicenseManager{Config: base.Config}
+
+	productId, err := service.GetId(c)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	product, err := service.FindById[model.Product](base.DB, productId)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	kp, err := lm.CreateProductKeyPair(product.Name, productId)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	httputil.NewResponse(c, http.MethodDelete, kp)
 }

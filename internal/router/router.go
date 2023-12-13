@@ -12,35 +12,30 @@ import (
 	docs "github.com/julianstephens/license-server/docs"
 	"github.com/julianstephens/license-server/internal/controller"
 	"github.com/julianstephens/license-server/internal/middleware"
+	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/logger"
-	sloggin "github.com/samber/slog-gin"
 	"gorm.io/gorm"
 )
 
 const BasePath = "/api/v1"
 
-var apiLogger = logger.GetLogger()
-
-func Setup(db *gorm.DB, rdb *persist.RedisStore) *gin.Engine {
+func Setup(db *gorm.DB, rdb *persist.RedisStore, conf *model.Config) *gin.Engine {
 	r := gin.New()
 
 	f, err := os.OpenFile("ls.access.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		logger.Errorf("Failed to create access log file: %v", err)
+		logger.Errorf("failed to create access log file: %v", err)
 	} else {
 		gin.DefaultWriter = io.MultiWriter(f)
 	}
 
-	routerLogger := logger.GetLogger()
-
-	r.Use(sloggin.New(routerLogger))
+	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	docs.SwaggerInfo.BasePath = BasePath
 
-	api := controller.Controller{DB: db, Logger: apiLogger}
+	api := controller.Controller{DB: db, Config: conf}
 
 	publicGroup := r.Group(BasePath)
 	{
@@ -84,6 +79,7 @@ func Setup(db *gorm.DB, rdb *persist.RedisStore) *gin.Engine {
 		{
 			productGroup.GET("/", api.GetProducts)
 			productGroup.GET("/:id", api.GetProduct)
+			productGroup.GET("/:id/key", api.CreateProductKeyPair)
 			productGroup.POST("/", api.AddProduct)
 			productGroup.PUT("/:id", api.UpdateProduct)
 			productGroup.DELETE("/:id", api.DeleteProduct)

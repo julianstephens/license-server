@@ -10,9 +10,13 @@ import (
 	"github.com/julianstephens/license-server/service"
 )
 
+type LicenseManager struct {
+	Config *model.Config
+}
+
 var ec = keypair.New(elliptic.P256())
 
-func CreateProductKeyPair(name string, conf *model.Config) (*model.ProductKeyPair, error) {
+func (lm *LicenseManager) CreateProductKeyPair(name string, productId string) (*model.ProductKeyPair, error) {
 	var keypair model.ProductKeyPair
 
 	privKey, pubKey, err := ec.GenerateKeys()
@@ -34,7 +38,7 @@ func CreateProductKeyPair(name string, conf *model.Config) (*model.ProductKeyPai
 	}
 
 	keypair.Id = id.String()
-	keypair.Name = name
+	keypair.ProductId = productId
 	keypair.PrivateKey = encodedPriv
 	keypair.PublicKey = encodedPub
 
@@ -48,7 +52,7 @@ func CreateProductKeyPair(name string, conf *model.Config) (*model.ProductKeyPai
 		return nil, err
 	}
 
-	if err := service.SaveKeyPair(kpMap, keypair.Id, false, conf); err != nil {
+	if err := service.UpdateKeyPairFile(kpMap, productId, false, lm.Config); err != nil {
 		return nil, err
 	}
 

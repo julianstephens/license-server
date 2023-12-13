@@ -42,7 +42,7 @@ func main() {
 	db := database.GetDB()
 	rdb := redis.GetStore()
 
-	r := router.Setup(db, rdb)
+	r := router.Setup(db, rdb, conf)
 
 	r.GET("/api/v1/docs/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler),
