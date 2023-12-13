@@ -129,6 +129,11 @@ definitions:
         type: integer
       deleted_at:
         type: integer
+      features:
+        description: Rules    []*Rule          `gorm:"many2many:product_rules;"`
+        items:
+          $ref: '#/definitions/model.ProductFeature'
+        type: array
       id:
         type: string
       licenses:
@@ -137,16 +142,12 @@ definitions:
         type: array
       name:
         type: string
-      rules:
-        items:
-          $ref: '#/definitions/model.Rule'
-        type: array
       updated_at:
         type: integer
       version:
         type: string
     type: object
-  model.Rule:
+  model.ProductFeature:
     properties:
       created_at:
         type: integer
@@ -156,20 +157,10 @@ definitions:
         type: string
       name:
         type: string
-      products:
-        items:
-          $ref: '#/definitions/model.Product'
-        type: array
+      product_id:
+        type: string
       updated_at:
         type: integer
-      user_groups:
-        items:
-          $ref: '#/definitions/model.UserGroup'
-        type: array
-      users:
-        items:
-          $ref: '#/definitions/model.User'
-        type: array
     type: object
   model.User:
     properties:
@@ -179,37 +170,12 @@ definitions:
         type: integer
       email:
         type: string
-      groups:
-        items:
-          $ref: '#/definitions/model.UserGroup'
-        type: array
       id:
         type: string
       name:
         type: string
       updated_at:
         type: integer
-    type: object
-  model.UserGroup:
-    properties:
-      created_at:
-        type: integer
-      deleted_at:
-        type: integer
-      id:
-        type: string
-      name:
-        type: string
-      rules:
-        items:
-          $ref: '#/definitions/model.Rule'
-        type: array
-      updated_at:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/model.User'
-        type: array
     type: object
   model.UserWithScopes:
     properties:

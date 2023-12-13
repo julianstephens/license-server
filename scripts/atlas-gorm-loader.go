@@ -14,9 +14,8 @@ import (
 var models = []any{
 	&model.User{},
 	&model.Product{},
+	&model.ProductFeature{},
 	&model.License{},
-	&model.Rule{},
-	&model.UserGroup{},
 	&model.APIKey{},
 }
 

@@ -763,6 +763,13 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "integer"
                 },
+                "features": {
+                    "description": "Rules    []*Rule          ` + "`" + `gorm:\"many2many:product_rules;\"` + "`" + `",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ProductFeature"
+                    }
+                },
                 "id": {
                     "type": "string"
                 },
@@ -775,12 +782,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Rule"
-                    }
-                },
                 "updated_at": {
                     "type": "integer"
                 },
@@ -789,7 +790,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Rule": {
+        "model.ProductFeature": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -804,26 +805,11 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Product"
-                    }
+                "product_id": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
-                },
-                "user_groups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.UserGroup"
-                    }
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.User"
-                    }
                 }
             }
         },
@@ -839,12 +825,6 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "groups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.UserGroup"
-                    }
-                },
                 "id": {
                     "type": "string"
                 },
@@ -853,38 +833,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "integer"
-                }
-            }
-        },
-        "model.UserGroup": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "deleted_at": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Rule"
-                    }
-                },
-                "updated_at": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.User"
-                    }
                 }
             }
         },
