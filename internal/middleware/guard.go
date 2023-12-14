@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/internal/controller"
-	"github.com/julianstephens/license-server/internal/controller/httputil"
+	"github.com/julianstephens/license-server/pkg/httputil"
 )
 
 func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
@@ -18,7 +18,7 @@ func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
 			return
 		}
 
-		isAuthed, err := api.Authorize(apiKey, scopes...)
+		isAuthed, userEmail, err := api.Authorize(apiKey, scopes...)
 
 		if err != nil {
 			httputil.NewError(ctx, http.StatusUnauthorized, err)
@@ -32,6 +32,7 @@ func AuthGuard(api controller.Controller, scopes ...string) gin.HandlerFunc {
 			return
 		}
 
+		ctx.Set("user", userEmail)
 		ctx.Next()
 	}
 }

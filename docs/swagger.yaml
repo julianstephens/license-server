@@ -110,18 +110,27 @@ definitions:
         type: integer
       id:
         type: string
-      product:
-        $ref: '#/definitions/model.Product'
+      name:
+        type: string
       product_id:
         type: string
       updated_at:
         type: integer
-      user:
-        $ref: '#/definitions/model.User'
-      user_id:
+    type: object
+  model.LicenseRequest:
+    properties:
+      features:
+        additionalProperties:
+          type: boolean
+        type: object
+      productId:
         type: string
-      value:
+      startDate:
+        type: integer
+      userId:
         type: string
+    required:
+    - productId
     type: object
   model.Product:
     properties:
@@ -130,7 +139,6 @@ definitions:
       deleted_at:
         type: integer
       features:
-        description: Rules    []*Rule          `gorm:"many2many:product_rules;"`
         items:
           $ref: '#/definitions/model.ProductFeature'
         type: array
@@ -496,8 +504,15 @@ paths:
       tags:
       - auth
   /licenses/issue:
-    get:
+    post:
       description: issues a new product license
+      parameters:
+      - description: new license info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LicenseRequest'
       responses:
         "200":
           description: OK

@@ -7,9 +7,10 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/julianstephens/license-server/internal/controller/httputil"
+
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/internal/service"
+	"github.com/julianstephens/license-server/pkg/httputil"
 )
 
 type AuthRequest struct {
@@ -97,15 +98,15 @@ func (base *Controller) CreateToken(c *gin.Context) {
 	httputil.NewResponse(c, http.MethodGet, key)
 }
 
-func (base *Controller) Authorize(key string, scopes ...string) (bool, error) {
+func (base *Controller) Authorize(key string, scopes ...string) (bool, string, error) {
 	apiKey, err := service.FindByKey(base.DB, key)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 
 	if len(scopes) > 0 && !mapset.NewSet(strings.Split(apiKey.Scopes, ",")...).Contains(scopes...) {
-		return false, errors.New("user does not have required scopes")
+		return false, "", errors.New("user does not have required scopes")
 	}
 
-	return true, nil
+	return true, apiKey.UserId, nil
 }

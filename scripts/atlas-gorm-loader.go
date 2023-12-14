@@ -7,6 +7,7 @@ import (
 
 	_ "ariga.io/atlas-go-sdk/recordriver"
 	"ariga.io/atlas-provider-gorm/gormschema"
+
 	"github.com/julianstephens/license-server/internal/model"
 )
 
@@ -15,7 +16,7 @@ var models = []any{
 	&model.User{},
 	&model.Product{},
 	&model.ProductFeature{},
-	&model.License{},
+	&model.LicenseWithAttributes{},
 	&model.APIKey{},
 }
 

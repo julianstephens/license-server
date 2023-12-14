@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/julianstephens/license-server/internal/controller/httputil"
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/internal/service"
+	"github.com/julianstephens/license-server/pkg/httputil"
 )
 
 type ScopeRequest struct {

@@ -496,7 +496,7 @@ const docTemplate = `{
             }
         },
         "/licenses/issue": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "ApiKey": []
@@ -507,6 +507,17 @@ const docTemplate = `{
                     "licenses"
                 ],
                 "summary": "Issue a license",
+                "parameters": [
+                    {
+                        "description": "new license info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LicenseRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -734,22 +745,36 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "product": {
-                    "$ref": "#/definitions/model.Product"
+                "name": {
+                    "type": "string"
                 },
                 "product_id": {
                     "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.LicenseRequest": {
+            "type": "object",
+            "required": [
+                "productId"
+            ],
+            "properties": {
+                "features": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "boolean"
+                    }
                 },
-                "user": {
-                    "$ref": "#/definitions/model.User"
-                },
-                "user_id": {
+                "productId": {
                     "type": "string"
                 },
-                "value": {
+                "startDate": {
+                    "type": "integer"
+                },
+                "userId": {
                     "type": "string"
                 }
             }
@@ -764,7 +789,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "features": {
-                    "description": "Rules    []*Rule          ` + "`" + `gorm:\"many2many:product_rules;\"` + "`" + `",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.ProductFeature"

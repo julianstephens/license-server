@@ -6,15 +6,20 @@ import (
 
 type License struct {
 	Base
-	UserId    string `json:"user_id"`
-	User      User
-	ProductId string  `json:"product_id"`
-	Product   Product `gorm:"not null"`
-	Value     string  `gorm:"not null;unique"`
+	Name      string
+	ProductId string `json:"product_id"`
 }
 
 type LicenseWithAttributes struct {
 	Base
-	Key        string `json:"key"`
-	Attributes datatypes.JSON
+	ProductId  string         `json:"product_id"`
+	Key        string         `json:"key"`
+	Attributes datatypes.JSON `json:"metadata"`
+}
+
+type LicenseRequest struct {
+	UserId    string           `binding:"omitempty"`
+	ProductId string           `binding:"required"`
+	Features  *map[string]bool `binding:"omitempty"`
+	StartDate *int64           `binding:"omitempty"`
 }

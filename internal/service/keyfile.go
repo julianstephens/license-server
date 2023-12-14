@@ -8,26 +8,55 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/mitchellh/mapstructure"
 )
 
 type KeyFile struct {
 	KeyPairs []map[string]string
 }
 
-// UpdateKeyPairFile adds, replaces, or removes a key pair from the server's key file
-func UpdateKeyPairFile(data map[string]string, productId string, shouldRemove bool, conf *model.Config) error {
+func LoadKey(productId string, conf *model.Config) (*model.ProductKeyPair, error) {
+	_, saveFile, err := getKeyFilePaths(conf)
+	if err != nil {
+		return nil, err
+	}
+
+	contents, err := ReadFile(saveFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var pkp model.ProductKeyPair
+	var f KeyFile
+	if err := jsoniter.Unmarshal(contents, &f); err != nil {
+		return nil, err
+	}
+
+	for _, val := range f.KeyPairs {
+		if val["product_id"] == productId {
+			if err := mapstructure.Decode(val, &pkp); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	logger.Infof("decoded kp: %v", pkp)
+
+	return &pkp, nil
+}
+
+// UpdateKeyFile adds, replaces, or removes a key pair from the server's key file
+func UpdateKeyFile(data map[string]string, productId string, shouldRemove bool, conf *model.Config) error {
 	didUpdate := false
 
-	p, err := os.Getwd()
+	saveDir, saveFile, err := getKeyFilePaths(conf)
 	if err != nil {
 		return err
 	}
 
-	saveDir := path.Join(p, conf.Server.OutDir)
 	if err := Ensure(saveDir, true); err != nil {
 		return err
 	}
-	saveFile := path.Join(saveDir, conf.Server.KeyFile)
 	if err := Ensure(saveFile, false); err != nil {
 		return err
 	}
@@ -90,4 +119,11 @@ func UpdateKeyPairFile(data map[string]string, productId string, shouldRemove bo
 	}
 
 	return nil
+}
+
+func getKeyFilePaths(conf *model.Config) (keyFileDirPath string, keyFilePath string, err error) {
+	p, err := os.Getwd()
+	keyFileDirPath = path.Join(p, conf.Server.OutDir)
+	keyFilePath = path.Join(keyFileDirPath, conf.Server.KeyFile)
+	return
 }

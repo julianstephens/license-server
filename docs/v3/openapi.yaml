@@ -391,8 +391,15 @@ paths:
       - auth
       x-codegen-request-body-name: data
   /licenses/issue:
-    get:
+    post:
       description: issues a new product license
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/model.LicenseRequest'
+        description: new license info
+        required: true
       responses:
         "200":
           content:
@@ -417,6 +424,7 @@ paths:
       summary: Issue a license
       tags:
       - licenses
+      x-codegen-request-body-name: data
   /licenses/validate:
     post:
       description: validates a product license
@@ -504,37 +512,19 @@ components:
             id: id
             deleted_at: 5
           licenses:
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          updated_at: 7
+          updated_at: 3
           name: name
           created_at: 0
           id: id
@@ -554,37 +544,19 @@ components:
             id: id
             deleted_at: 5
           licenses:
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          updated_at: 7
+          updated_at: 3
           name: name
           created_at: 0
           id: id
@@ -602,17 +574,17 @@ components:
     httputil.HTTPResponse-array_model_User:
       example:
         data:
-        - updated_at: 4
+        - updated_at: 1
           name: name
-          created_at: 3
+          created_at: 0
           id: id
-          deleted_at: 2
+          deleted_at: 6
           email: email
-        - updated_at: 4
+        - updated_at: 1
           name: name
-          created_at: 3
+          created_at: 0
           id: id
-          deleted_at: 2
+          deleted_at: 6
           email: email
         message: message
       properties:
@@ -658,37 +630,19 @@ components:
             id: id
             deleted_at: 5
           licenses:
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          - product: null
-            updated_at: 9
-            user_id: user_id
+          - updated_at: 9
             product_id: product_id
+            name: name
             created_at: 2
             id: id
             deleted_at: 7
-            user:
-              updated_at: 4
-              name: name
-              created_at: 3
-              id: id
-              deleted_at: 2
-              email: email
-            value: value
-          updated_at: 7
+          updated_at: 3
           name: name
           created_at: 0
           id: id
@@ -704,11 +658,11 @@ components:
     httputil.HTTPResponse-model_User:
       example:
         data:
-          updated_at: 4
+          updated_at: 1
           name: name
-          created_at: 3
+          created_at: 0
           id: id
-          deleted_at: 2
+          deleted_at: 6
           email: email
         message: message
       properties:
@@ -724,11 +678,11 @@ components:
           - authentication_scopes
           - authentication_scopes
           user:
-            updated_at: 4
+            updated_at: 1
             name: name
-            created_at: 3
+            created_at: 0
             id: id
-            deleted_at: 2
+            deleted_at: 6
             email: email
         message: message
       properties:
@@ -767,21 +721,12 @@ components:
       type: object
     model.License:
       example:
-        product: null
         updated_at: 9
-        user_id: user_id
         product_id: product_id
+        name: name
         created_at: 2
         id: id
         deleted_at: 7
-        user:
-          updated_at: 4
-          name: name
-          created_at: 3
-          id: id
-          deleted_at: 2
-          email: email
-        value: value
       properties:
         created_at:
           type: integer
@@ -789,18 +734,27 @@ components:
           type: integer
         id:
           type: string
-        product:
-          $ref: '#/components/schemas/model.Product'
+        name:
+          type: string
         product_id:
           type: string
         updated_at:
           type: integer
-        user:
-          $ref: '#/components/schemas/model.User'
-        user_id:
+      type: object
+    model.LicenseRequest:
+      properties:
+        features:
+          additionalProperties:
+            type: boolean
+          type: object
+        productId:
           type: string
-        value:
+        startDate:
+          type: integer
+        userId:
           type: string
+      required:
+      - productId
       type: object
     model.Product:
       example:
@@ -818,37 +772,19 @@ components:
           id: id
           deleted_at: 5
         licenses:
-        - product: null
-          updated_at: 9
-          user_id: user_id
+        - updated_at: 9
           product_id: product_id
+          name: name
           created_at: 2
           id: id
           deleted_at: 7
-          user:
-            updated_at: 4
-            name: name
-            created_at: 3
-            id: id
-            deleted_at: 2
-            email: email
-          value: value
-        - product: null
-          updated_at: 9
-          user_id: user_id
+        - updated_at: 9
           product_id: product_id
+          name: name
           created_at: 2
           id: id
           deleted_at: 7
-          user:
-            updated_at: 4
-            name: name
-            created_at: 3
-            id: id
-            deleted_at: 2
-            email: email
-          value: value
-        updated_at: 7
+        updated_at: 3
         name: name
         created_at: 0
         id: id
@@ -860,8 +796,6 @@ components:
         deleted_at:
           type: integer
         features:
-          description: "Rules    []*Rule          `gorm:\"many2many:product_rules;\"\
-            `"
           items:
             $ref: '#/components/schemas/model.ProductFeature'
           type: array
@@ -902,11 +836,11 @@ components:
       type: object
     model.User:
       example:
-        updated_at: 4
+        updated_at: 1
         name: name
-        created_at: 3
+        created_at: 0
         id: id
-        deleted_at: 2
+        deleted_at: 6
         email: email
       properties:
         created_at:
@@ -928,11 +862,11 @@ components:
         - authentication_scopes
         - authentication_scopes
         user:
-          updated_at: 4
+          updated_at: 1
           name: name
-          created_at: 3
+          created_at: 0
           id: id
-          deleted_at: 2
+          deleted_at: 6
           email: email
       properties:
         authentication_scopes:

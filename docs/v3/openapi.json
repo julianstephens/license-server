@@ -600,8 +600,19 @@
       }
     },
     "/licenses/issue" : {
-      "get" : {
+      "post" : {
         "description" : "issues a new product license",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.LicenseRequest"
+              }
+            }
+          },
+          "description" : "new license info",
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "content" : {
@@ -638,7 +649,8 @@
           "ApiKey" : [ ]
         } ],
         "summary" : "Issue a license",
-        "tags" : [ "licenses" ]
+        "tags" : [ "licenses" ],
+        "x-codegen-request-body-name" : "data"
       }
     },
     "/licenses/validate" : {
@@ -854,25 +866,37 @@
           "id" : {
             "type" : "string"
           },
-          "product" : {
-            "$ref" : "#/components/schemas/model.Product"
+          "name" : {
+            "type" : "string"
           },
           "product_id" : {
             "type" : "string"
           },
           "updated_at" : {
             "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "model.LicenseRequest" : {
+        "properties" : {
+          "features" : {
+            "additionalProperties" : {
+              "type" : "boolean"
+            },
+            "type" : "object"
           },
-          "user" : {
-            "$ref" : "#/components/schemas/model.User"
-          },
-          "user_id" : {
+          "productId" : {
             "type" : "string"
           },
-          "value" : {
+          "startDate" : {
+            "type" : "integer"
+          },
+          "userId" : {
             "type" : "string"
           }
         },
+        "required" : [ "productId" ],
         "type" : "object"
       },
       "model.Product" : {
@@ -884,7 +908,6 @@
             "type" : "integer"
           },
           "features" : {
-            "description" : "Rules    []*Rule          `gorm:\"many2many:product_rules;\"`",
             "items" : {
               "$ref" : "#/components/schemas/model.ProductFeature"
             },

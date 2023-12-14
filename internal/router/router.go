@@ -6,20 +6,20 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+
 	docs "github.com/julianstephens/license-server/docs"
+	"github.com/julianstephens/license-server/internal/config"
 	"github.com/julianstephens/license-server/internal/controller"
 	"github.com/julianstephens/license-server/internal/middleware"
-	"github.com/julianstephens/license-server/internal/model"
+	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/logger"
-	"gorm.io/gorm"
 )
 
 const BasePath = "/api/v1"
 
-func Setup(db *gorm.DB, rdb *persist.RedisStore, conf *model.Config) *gin.Engine {
+func Setup() *gin.Engine {
 	r := gin.New()
 
 	f, err := os.OpenFile("ls.access.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -34,6 +34,9 @@ func Setup(db *gorm.DB, rdb *persist.RedisStore, conf *model.Config) *gin.Engine
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	docs.SwaggerInfo.BasePath = BasePath
+
+	db := database.GetDB()
+	conf := config.GetConfig()
 
 	api := controller.Controller{DB: db, Config: conf}
 
@@ -59,7 +62,7 @@ func Setup(db *gorm.DB, rdb *persist.RedisStore, conf *model.Config) *gin.Engine
 		licenseGroup := protectedGroup.Group("/licenses")
 		{
 			licenseGroup.GET("/issue", api.IssueLicense)
-			licenseGroup.POST("/validate", api.ValidateLicense)
+			licenseGroup.POST("/validate/:id", api.ValidateLicense)
 		}
 	}
 

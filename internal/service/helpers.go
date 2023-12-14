@@ -2,8 +2,9 @@ package service
 
 import (
 	"bufio"
-	"errors"
 	"os"
+
+	"errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/julianstephens/license-server/pkg/logger"

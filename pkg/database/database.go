@@ -5,29 +5,43 @@ import (
 	"io"
 	"log"
 	"os"
+	"sync"
 	"time"
 
-	"github.com/julianstephens/license-server/internal/model"
+	"github.com/julianstephens/license-server/internal/config"
+	appLogger "github.com/julianstephens/license-server/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 var (
-	DB    *gorm.DB
-	err   error
-	DBErr error
+	DB   *gorm.DB
+	err  error
+	once sync.Once
 )
 
 type Database struct {
 	*gorm.DB
 }
 
-func Setup(conf *model.Config) error {
+var conf = config.GetConfig()
+
+func GetDB() *gorm.DB {
+	once.Do(func() {
+		DB = setup()
+		if err != nil {
+			appLogger.Fatalf("unable to initialize database: %+v", err)
+		}
+	})
+	return DB
+}
+
+func setup() *gorm.DB {
 	var db *gorm.DB
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", conf.Database.Host, conf.Database.User, conf.Database.Password, conf.Database.DB, conf.Database.Port)
 
-	newDBLogger := logger.New(
+	dbLogger := logger.New(
 		log.New(getWriter(), "\r\n", log.LstdFlags), // io writer
 		logger.Config{
 			SlowThreshold:             time.Second, // Slow SQL threshold
@@ -38,25 +52,14 @@ func Setup(conf *model.Config) error {
 	)
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		// Logger: logger.Default.LogMode(logger.Info),
-		Logger: newDBLogger,
+		Logger: dbLogger,
 	})
+
 	if err != nil {
-		DBErr = err
-		return err
+		return nil
 	}
 
-	DB = db
-
-	return nil
-}
-
-func GetDB() *gorm.DB {
-	return DB
-}
-
-func GetDBErr() error {
-	return DBErr
+	return db
 }
 
 func getWriter() io.Writer {

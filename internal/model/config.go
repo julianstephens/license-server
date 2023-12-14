@@ -9,11 +9,12 @@ type Database struct {
 }
 
 type Server struct {
-	Host    string `mapstructure:"host"`
-	Port    int    `mapstructure:"port"`
-	Env     string `mapstructure:"env"`
-	KeyFile string `mapstructure:"keyfile"`
-	OutDir  string `mapstructure:"outdir"`
+	Host          string `mapstructure:"host"`
+	Port          int    `mapstructure:"port"`
+	Env           string `mapstructure:"env"`
+	KeyFile       string `mapstructure:"keyfile"`
+	OutDir        string `mapstructure:"outdir"`
+	LicenseLength int    `mapstructure:"licenselength"`
 }
 
 type Config struct {

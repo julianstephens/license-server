@@ -15,8 +15,8 @@ type ProductFeature struct {
 }
 
 type ProductKeyPair struct {
-	Id         string `json:"id"`
-	ProductId  string `json:"product_id"`
-	PrivateKey string `json:"private_key"`
-	PublicKey  string `json:"public_key"`
+	Id         string `json:"id" mapstructure:"id"`
+	ProductId  string `json:"product_id" mapstructure:"product_id"`
+	PrivateKey string `json:"private_key" mapstructure:"private_key"`
+	PublicKey  string `json:"public_key" mapstructure:"public_key"`
 }
