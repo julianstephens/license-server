@@ -33,7 +33,7 @@ func (base *Controller) GetUsers(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }
 
 // GetUser godoc
@@ -67,7 +67,7 @@ func (base *Controller) GetUser(c *gin.Context) {
 		res.Scopes = strings.Split(scopes, ",")
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }
 
 // AddUser godoc
@@ -98,7 +98,7 @@ func (base *Controller) AddUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
 }
 
 // UpdateUser godoc
@@ -143,7 +143,7 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Put})
 }
 
 // DeleteUser godoc
@@ -168,7 +168,7 @@ func (base *Controller) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodDelete, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Delete})
 }
 
 // UpdateScope godoc
@@ -216,5 +216,5 @@ func (base *Controller) UpdateUserScopes(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, model.UserWithScopes{User: user, Scopes: strings.Split(res.Scopes, ",")}, nil)
+	httputil.NewResponse(c, model.UserWithScopes{User: user, Scopes: strings.Split(res.Scopes, ",")}, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Put})
 }

@@ -57,7 +57,7 @@ func (base *Controller) Register(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
 }
 
 // CreateToken godoc
@@ -95,7 +95,7 @@ func (base *Controller) CreateToken(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, key, nil)
+	httputil.NewResponse(c, key, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }
 
 func (base *Controller) Authorize(key string, scopes ...string) (bool, string, error) {

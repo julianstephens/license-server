@@ -539,40 +539,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/licenses/validate": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKey": []
-                    }
-                ],
-                "description": "validates a product license",
-                "tags": [
-                    "licenses"
-                ],
-                "summary": "Validate a license",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPResponse-any"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -733,48 +699,16 @@ const docTemplate = `{
                 }
             }
         },
-        "model.License": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "deleted_at": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "product_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.LicenseRequest": {
             "type": "object",
             "required": [
-                "productId"
+                "key"
             ],
             "properties": {
-                "features": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "boolean"
-                    }
-                },
-                "productId": {
+                "key": {
                     "type": "string"
                 },
-                "startDate": {
-                    "type": "integer"
-                },
-                "userId": {
+                "machine": {
                     "type": "string"
                 }
             }
@@ -796,12 +730,6 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
-                },
-                "licenses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.License"
-                    }
                 },
                 "name": {
                     "type": "string"

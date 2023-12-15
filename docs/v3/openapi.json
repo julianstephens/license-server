@@ -652,48 +652,6 @@
         "tags" : [ "licenses" ],
         "x-codegen-request-body-name" : "data"
       }
-    },
-    "/licenses/validate" : {
-      "post" : {
-        "description" : "validates a product license",
-        "responses" : {
-          "200" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPResponse-any"
-                }
-              }
-            },
-            "description" : "OK"
-          },
-          "400" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPError"
-                }
-              }
-            },
-            "description" : "Bad Request"
-          },
-          "500" : {
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/httputil.HTTPError"
-                }
-              }
-            },
-            "description" : "Internal Server Error"
-          }
-        },
-        "security" : [ {
-          "ApiKey" : [ ]
-        } ],
-        "summary" : "Validate a license",
-        "tags" : [ "licenses" ]
-      }
     }
   },
   "components" : {
@@ -855,48 +813,16 @@
         },
         "type" : "object"
       },
-      "model.License" : {
-        "properties" : {
-          "created_at" : {
-            "type" : "integer"
-          },
-          "deleted_at" : {
-            "type" : "integer"
-          },
-          "id" : {
-            "type" : "string"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "product_id" : {
-            "type" : "string"
-          },
-          "updated_at" : {
-            "type" : "integer"
-          }
-        },
-        "type" : "object"
-      },
       "model.LicenseRequest" : {
         "properties" : {
-          "features" : {
-            "additionalProperties" : {
-              "type" : "boolean"
-            },
-            "type" : "object"
-          },
-          "productId" : {
+          "key" : {
             "type" : "string"
           },
-          "startDate" : {
-            "type" : "integer"
-          },
-          "userId" : {
+          "machine" : {
             "type" : "string"
           }
         },
-        "required" : [ "productId" ],
+        "required" : [ "key" ],
         "type" : "object"
       },
       "model.Product" : {
@@ -915,12 +841,6 @@
           },
           "id" : {
             "type" : "string"
-          },
-          "licenses" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.License"
-            },
-            "type" : "array"
           },
           "name" : {
             "type" : "string"

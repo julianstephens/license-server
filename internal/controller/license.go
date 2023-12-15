@@ -7,7 +7,7 @@ import (
 
 	"github.com/julianstephens/license-server/internal/config"
 	"github.com/julianstephens/license-server/internal/licensemanager"
-	"github.com/julianstephens/license-server/internal/service"
+	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/httputil"
 )
@@ -28,44 +28,16 @@ var lm = licensemanager.LicenseManager{Config: conf, DB: db}
 // @Router /licenses/issue [post]
 func (base *Controller) IssueLicense(c *gin.Context) {
 	lm.SetCurrentUser(c.GetString("user"))
-	id, err := service.GetId(c)
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
+	var req model.LicenseRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	_, _, key, err := lm.GenerateLicense(id)
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-		return
-	}
-	httputil.NewResponse[any](c, http.MethodGet, gin.H{"product_key": key, "len": len(key)}, &httputil.Opts{IsCrudHandler: false})
-}
 
-type Req struct {
-	Key     string
-	Machine *string
-}
-
-// ValidateLicense godoc
-// @Summary Validate a license
-// @Description validates a product license
-// @Tags licenses
-// @Security ApiKey
-// @Success 200 {object} httputil.HTTPResponse[any]
-// @Failure 400 {object} httputil.HTTPError
-// @Failure 500 {object} httputil.HTTPError
-// @Router /licenses/validate [post]
-func (base *Controller) ValidateLicense(c *gin.Context) {
-	lm.SetCurrentUser(c.GetString("user"))
-	var data Req
-	if err := c.ShouldBindJSON(&data); err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-		return
-	}
-	ok, err := lm.ValidateKey(data.Key)
+	ok, err := lm.ValidateKey(req.Key)
 	if err != nil {
-		httputil.NewResponse[any](c, http.MethodPost, gin.H{"is_valid": false}, &httputil.Opts{IsCrudHandler: false})
+		httputil.NewResponse[any](c, gin.H{"success": false}, httputil.Options{IsCrudHandler: false})
 		return
 	}
-	httputil.NewResponse[any](c, http.MethodPost, gin.H{"is_valid": ok}, &httputil.Opts{IsCrudHandler: false})
+	httputil.NewResponse[any](c, gin.H{"success": ok}, httputil.Options{IsCrudHandler: false})
 }

@@ -2,7 +2,6 @@ package httputil
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,30 +11,54 @@ type HTTPResponse[T any] struct {
 	Data    T      `json:"data"`
 }
 
-type Opts struct {
+type Options struct {
 	IsCrudHandler bool
+	HttpMsgMethod HTTPMethod
 }
 
-func NewResponse[T any](ctx *gin.Context, method string, data T, opts *Opts) {
+type HTTPMethod int64
+
+const (
+	Get HTTPMethod = iota
+	Post
+	Put
+	Delete
+)
+
+func (s HTTPMethod) String() string {
+	switch s {
+	case Get:
+		return "get"
+	case Post:
+		return "post"
+	case Put:
+		return "put"
+	case Delete:
+		return "delete"
+	}
+	return "unknown"
+}
+
+func NewResponse[T any](ctx *gin.Context, data T, opts Options) {
 	status := http.StatusOK
 
-	if opts != nil && !opts.IsCrudHandler {
+	if !opts.IsCrudHandler {
 		ctx.JSON(status, data)
 		return
 	}
 
 	var message string
 
-	switch strings.ToUpper(method) {
-	case http.MethodPost:
-		status = http.StatusCreated
-		message = "resource(s) created successfully"
-	case http.MethodPut:
-		message = "resource(s) updated successfully"
-	case http.MethodDelete:
-		message = "resource(s) deleted successfully"
+	switch opts.HttpMsgMethod {
 	default:
 		message = "resource(s) retrieved successfully"
+	case Post:
+		status = http.StatusCreated
+		message = "resource(s) created successfully"
+	case Put:
+		message = "resource(s) updated successfully"
+	case Delete:
+		message = "resource(s) deleted successfully"
 	}
 
 	res := HTTPResponse[T]{

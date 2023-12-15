@@ -102,35 +102,14 @@ definitions:
       user_id:
         type: string
     type: object
-  model.License:
-    properties:
-      created_at:
-        type: integer
-      deleted_at:
-        type: integer
-      id:
-        type: string
-      name:
-        type: string
-      product_id:
-        type: string
-      updated_at:
-        type: integer
-    type: object
   model.LicenseRequest:
     properties:
-      features:
-        additionalProperties:
-          type: boolean
-        type: object
-      productId:
+      key:
         type: string
-      startDate:
-        type: integer
-      userId:
+      machine:
         type: string
     required:
-    - productId
+    - key
     type: object
   model.Product:
     properties:
@@ -144,10 +123,6 @@ definitions:
         type: array
       id:
         type: string
-      licenses:
-        items:
-          $ref: '#/definitions/model.License'
-        type: array
       name:
         type: string
       updated_at:
@@ -529,27 +504,6 @@ paths:
       security:
       - ApiKey: []
       summary: Issue a license
-      tags:
-      - licenses
-  /licenses/validate:
-    post:
-      description: validates a product license
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/httputil.HTTPResponse-any'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      security:
-      - ApiKey: []
-      summary: Validate a license
       tags:
       - licenses
 schemes:

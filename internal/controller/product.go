@@ -27,7 +27,7 @@ func (base *Controller) GetProducts(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }
 
 // GetProduct godoc
@@ -52,7 +52,7 @@ func (base *Controller) GetProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }
 
 // AddProduct godoc
@@ -79,7 +79,7 @@ func (base *Controller) AddProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
 }
 
 // UpdateProduct godoc
@@ -118,7 +118,7 @@ func (base *Controller) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Put})
 }
 
 // DeleteProduct godoc
@@ -143,7 +143,7 @@ func (base *Controller) DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodDelete, res, nil)
+	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Delete})
 }
 
 func (base *Controller) CreateProductKeyPair(c *gin.Context) {
@@ -161,5 +161,5 @@ func (base *Controller) CreateProductKeyPair(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, kp, nil)
+	httputil.NewResponse(c, kp, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
 }
