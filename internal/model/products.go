@@ -4,7 +4,6 @@ type Product struct {
 	Base
 	Name     string           `gorm:"not null;unique;uniqueIndex"`
 	Version  string           `gorm:"default:1.0"`
-	Licenses []License        `gorm:"foreignKey:ProductId"`
 	Features []ProductFeature `gorm:"foreignKey:ProductId"`
 }
 

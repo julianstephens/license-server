@@ -1,24 +1,38 @@
 package licensemanager
 
 import (
-	"crypto/elliptic"
+	"bytes"
+	"crypto/cipher"
+	"crypto/ed25519"
+	"crypto/x509"
+	"fmt"
 
 	"github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/mr-tron/base58"
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
 
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/internal/service"
 	"github.com/julianstephens/license-server/pkg/crypto"
+	"github.com/julianstephens/license-server/pkg/logger"
 )
 
 type LicenseManager struct {
-	Config *model.Config
+	Config      *model.Config
+	DB          *gorm.DB
+	CurrentUser *string
 }
 
-var ec = crypto.New(elliptic.P256())
+// SetCurrentUser updates the license manager with a new gin context for user logging
+func (lm *LicenseManager) SetCurrentUser(userId string) {
+	lm.CurrentUser = &userId
+}
 
-func (lm *LicenseManager) CreateProductKeyPair(name string, productId string) (keypair *model.ProductKeyPair, err error) {
-	privKey, pubKey, err := ec.GenerateKeys()
+// CreateProductKeyPair generates a new ecc key pair for a given product/version
+func (lm *LicenseManager) CreateProductKeyPair(productId string) (keypair *model.ProductKeyPair, err error) {
+	privKey, pubKey, err := crypto.GenerateEd25519Key()
 	if err != nil {
 		return
 	}
@@ -27,19 +41,21 @@ func (lm *LicenseManager) CreateProductKeyPair(name string, productId string) (k
 	if err != nil {
 		return
 	}
-	encodedPriv, err := ec.EncodePrivate(privKey)
+	encodedPriv, err := crypto.EncodePrivate(privKey)
 	if err != nil {
 		return
 	}
-	encodedPub, err := ec.EncodePublic(pubKey)
+	encodedPub, err := crypto.EncodePublic(pubKey)
 	if err != nil {
 		return
 	}
 
-	keypair.Id = id.String()
-	keypair.ProductId = productId
-	keypair.PrivateKey = encodedPriv
-	keypair.PublicKey = encodedPub
+	keypair = &model.ProductKeyPair{
+		Id:         id.String(),
+		ProductId:  productId,
+		PrivateKey: encodedPriv,
+		PublicKey:  encodedPub,
+	}
 
 	bytes, err := jsoniter.Marshal(keypair)
 	if err != nil {
@@ -58,62 +74,127 @@ func (lm *LicenseManager) CreateProductKeyPair(name string, productId string) (k
 	return
 }
 
-// func (lm *LicenseManager) GenerateLicense(input model.LicenseRequest) (license *model.LicenseWithAttributes, err error) {
-// 	// initialize new license with user input
-// 	startDate := service.If(input.StartDate != nil, *input.StartDate, time.Now().Unix())
-// 	endDate := time.Unix(startDate, 10).AddDate(lm.Config.Server.LicenseLength, 0, 0).Unix()
+// GenerateLicense adds a new empty license to the database and returns it
+func (lm *LicenseManager) GenerateLicense(productId string) (licenseBuf bytes.Buffer, eciesEd25519Enc []byte, key string, err error) {
+	logger.Infof("generating license for product <%s> as user <%s>", productId, *lm.CurrentUser)
 
-// 	featStr := "*"
-// 	if input.Features != nil {
-// 		var features string
-// 		features, err = jsoniter.MarshalToString(input.Features)
-// 		if err != nil {
-// 			return
-// 		}
-// 		featStr = features
-// 	}
+	licenseAttrs := map[string]string{
+		"identity":     productId,
+		"machine":      "",
+		"issue_date":   "",
+		"end_date":     "",
+		"refresh_date": "",
+	}
+	attrsBuf, err := jsoniter.Marshal(licenseAttrs)
+	if err != nil {
+		return
+	}
+	attrsJson, err := jsoniter.MarshalToString(licenseAttrs)
+	if err != nil {
+		return
+	}
+	attrsHash, err := crypto.Hash(attrsJson)
+	if err != nil {
+		return
+	}
 
-// 	var licenseKey *ecdsa.PrivateKey
-// 	licenseKey, _, err = ec.GenerateKeys()
-// 	if err != nil {
-// 		return
-// 	}
+	privKey, _, err := lm.getKeyPair(productId)
+	if err != nil {
+		return
+	}
 
-// 	licenseAttributes := fmt.Sprintf(`{"identity": "%s", "machine": "", "startDate": "%d", "endDate": "%d", "issueDate": "%d", "features": "%s"}`, input.ProductId, startDate, endDate, time.Now().Unix(), featStr)
-// 	license = &model.LicenseWithAttributes{
-// 		ProductId:  input.ProductId,
-// 		Attributes: datatypes.JSON([]byte(licenseAttributes)),
-// 	}
+	sig := crypto.Sign(attrsHash, privKey)
+	block, err := lm.getCipherBlock(privKey)
+	if err != nil {
+		return
+	}
 
-// 	// convert license to buffer and encrypt with product key
-// 	var licenseBuf []byte
-// 	licenseBuf, err = jsoniter.Marshal(&license)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	encSig, err := crypto.Encrypt(block, string(sig))
+	if err != nil {
+		return
+	}
 
-// 	var pkp *model.ProductKeyPair
-// 	pkp, err = service.LoadKey(input.ProductId, lm.Config)
-// 	if err != nil {
-// 		err = fmt.Errorf("unable to load product key pair: %+v", err)
-// 		return
-// 	}
+	key = base58.Encode(encSig)
 
-// 	// generate key pair for license issuing
-// 	var priv *ecdsa.PrivateKey
-// 	var pub *ecdsa.PublicKey
-// 	priv, pub, err = ec.GenerateKeys()
-// 	if err != nil {
-// 		return
-// 	}
+	license := &model.License{
+		ProductId:  productId,
+		Key:        []byte(key),
+		Attributes: datatypes.JSON(attrsBuf),
+	}
+	_, err = service.Create[model.License](lm.DB, *license)
 
-// 	// encPriv, err := ec.EncodePrivate(priv)
-// 	// if err != nil {
-// 	// 	return nil, nil
-// 	// }
+	return
+}
 
-// 	return
-// }
+// ValidateLicense verifies a product key has been signed by the server
+func (lm *LicenseManager) ValidateKey(key string) (ok bool, err error) {
+	license, err := service.Find[model.License](lm.DB, model.License{Key: []byte(key)}, nil)
+	if err != nil {
+		logger.Errorf("unable to retrieve license from db: %+v", err)
+		return
+	}
+	logger.Infof("validating license for product <%s> as user <%s>", license.ProductId, *lm.CurrentUser)
 
-func AssignLicense()   {}
-func ValidateLicense() {}
+	privKey, pubKey, err := lm.getKeyPair(license.ProductId)
+	if err != nil {
+		return
+	}
+
+	block, err := lm.getCipherBlock(privKey)
+	if err != nil {
+		logger.Errorf("cannot generate aes encryption key: %+v", err)
+		return
+	}
+
+	decodedKey, err := base58.Decode(key)
+	if err != nil {
+		logger.Errorf("cannot decode product key: %+v", err)
+		return
+	}
+
+	// logger.Infof("decoded product key: %+v", string(decodedKey))
+
+	decryptedSig, err := crypto.Decrypt(block, decodedKey)
+	if err != nil {
+		logger.Errorf("unable to decrypt signature: %+v", err)
+		return
+	}
+
+	_, ok = crypto.VerifySignature([]byte(decryptedSig), privKey, pubKey)
+
+	return
+
+}
+
+func (lm *LicenseManager) getKeyPair(productId string) (privKey ed25519.PrivateKey, pubKey ed25519.PublicKey, err error) {
+	// retrieve product/version key pair
+	pkp, err := service.LoadKey(productId, lm.Config)
+	if err != nil {
+		err = fmt.Errorf("unable to load product key pair: %+v", err)
+		return
+	}
+	privKey, err = crypto.DecodePrivate(pkp.PrivateKey)
+	if err != nil {
+		return
+	}
+
+	pubKey, err = crypto.DecodePublic(pkp.PublicKey)
+
+	return
+}
+
+func (lm *LicenseManager) getCipherBlock(privKey ed25519.PrivateKey) (block cipher.Block, err error) {
+	genericKey, err := x509.MarshalPKCS8PrivateKey(privKey)
+	if err != nil {
+		return
+	}
+
+	key, err := crypto.Hash(string(genericKey))
+	if err != nil {
+		return
+	}
+
+	block, err = crypto.GetBlock(key)
+
+	return
+}

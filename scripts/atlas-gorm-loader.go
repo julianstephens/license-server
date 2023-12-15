@@ -16,7 +16,7 @@ var models = []any{
 	&model.User{},
 	&model.Product{},
 	&model.ProductFeature{},
-	&model.LicenseWithAttributes{},
+	&model.License{},
 	&model.APIKey{},
 }
 

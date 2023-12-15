@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
+
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/internal/service"
 	"github.com/julianstephens/license-server/pkg/httputil"
@@ -32,7 +33,7 @@ func (base *Controller) GetUsers(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res)
+	httputil.NewResponse(c, http.MethodGet, res, nil)
 }
 
 // GetUser godoc
@@ -66,7 +67,7 @@ func (base *Controller) GetUser(c *gin.Context) {
 		res.Scopes = strings.Split(scopes, ",")
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res)
+	httputil.NewResponse(c, http.MethodGet, res, nil)
 }
 
 // AddUser godoc
@@ -97,7 +98,7 @@ func (base *Controller) AddUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, res)
+	httputil.NewResponse(c, http.MethodPost, res, nil)
 }
 
 // UpdateUser godoc
@@ -142,7 +143,7 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, res)
+	httputil.NewResponse(c, http.MethodPut, res, nil)
 }
 
 // DeleteUser godoc
@@ -167,7 +168,7 @@ func (base *Controller) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodDelete, res)
+	httputil.NewResponse(c, http.MethodDelete, res, nil)
 }
 
 // UpdateScope godoc
@@ -215,5 +216,5 @@ func (base *Controller) UpdateUserScopes(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, model.UserWithScopes{User: user, Scopes: strings.Split(res.Scopes, ",")})
+	httputil.NewResponse(c, http.MethodPut, model.UserWithScopes{User: user, Scopes: strings.Split(res.Scopes, ",")}, nil)
 }

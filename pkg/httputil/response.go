@@ -12,8 +12,18 @@ type HTTPResponse[T any] struct {
 	Data    T      `json:"data"`
 }
 
-func NewResponse[T any](ctx *gin.Context, method string, data T) {
+type Opts struct {
+	IsCrudHandler bool
+}
+
+func NewResponse[T any](ctx *gin.Context, method string, data T, opts *Opts) {
 	status := http.StatusOK
+
+	if opts != nil && !opts.IsCrudHandler {
+		ctx.JSON(status, data)
+		return
+	}
+
 	var message string
 
 	switch strings.ToUpper(method) {

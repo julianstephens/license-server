@@ -1,17 +1,20 @@
 package controller
 
 import (
-	"crypto/elliptic"
-	"crypto/x509"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/julianstephens/license-server/internal/config"
+	"github.com/julianstephens/license-server/internal/licensemanager"
 	"github.com/julianstephens/license-server/internal/service"
-	"github.com/julianstephens/license-server/pkg/crypto"
+	"github.com/julianstephens/license-server/pkg/database"
 	"github.com/julianstephens/license-server/pkg/httputil"
-	"github.com/julianstephens/license-server/pkg/logger"
 )
+
+var conf = config.GetConfig()
+var db = database.GetDB()
+var lm = licensemanager.LicenseManager{Config: conf, DB: db}
 
 // IssueLicense godoc
 // @Summary Issue a license
@@ -24,7 +27,23 @@ import (
 // @Failure 500 {object} httputil.HTTPError
 // @Router /licenses/issue [post]
 func (base *Controller) IssueLicense(c *gin.Context) {
-	httputil.NewResponse[any](c, http.MethodGet, gin.H{"message": "ok"})
+	lm.SetCurrentUser(c.GetString("user"))
+	id, err := service.GetId(c)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+	_, _, key, err := lm.GenerateLicense(id)
+	if err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.NewResponse[any](c, http.MethodGet, gin.H{"product_key": key, "len": len(key)}, &httputil.Opts{IsCrudHandler: false})
+}
+
+type Req struct {
+	Key     string
+	Machine *string
 }
 
 // ValidateLicense godoc
@@ -37,30 +56,16 @@ func (base *Controller) IssueLicense(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /licenses/validate [post]
 func (base *Controller) ValidateLicense(c *gin.Context) {
-	var ec = crypto.New(elliptic.P256())
-	id, err := service.GetId(c)
-	if err != nil {
-		panic(err)
+	lm.SetCurrentUser(c.GetString("user"))
+	var data Req
+	if err := c.ShouldBindJSON(&data); err != nil {
+		httputil.NewError(c, http.StatusInternalServerError, err)
+		return
 	}
-
-	kp, err := service.LoadKey(id, base.Config)
+	ok, err := lm.ValidateKey(data.Key)
 	if err != nil {
-		logger.Infof("unable to load key")
-		panic(err)
+		httputil.NewResponse[any](c, http.MethodPost, gin.H{"is_valid": false}, &httputil.Opts{IsCrudHandler: false})
+		return
 	}
-	logger.Infof("kp: %s", kp.PrivateKey)
-
-	privKey, err := ec.DecodePrivate(kp.PrivateKey)
-	if err != nil {
-		logger.Infof("unable to decode string")
-		panic(err)
-	}
-
-	encoded, err := x509.MarshalECPrivateKey(privKey)
-	if err != nil {
-		logger.Infof("unable to convert to bytes")
-		panic(err)
-	}
-
-	httputil.NewResponse[any](c, http.MethodPost, gin.H{"str": encoded})
+	httputil.NewResponse[any](c, http.MethodPost, gin.H{"is_valid": ok}, &httputil.Opts{IsCrudHandler: false})
 }

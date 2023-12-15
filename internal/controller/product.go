@@ -4,11 +4,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/julianstephens/license-server/internal/licensemanager"
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/internal/service"
 	"github.com/julianstephens/license-server/pkg/httputil"
-	"github.com/mitchellh/mapstructure"
 )
 
 // GetProducts godoc
@@ -26,7 +27,7 @@ func (base *Controller) GetProducts(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res)
+	httputil.NewResponse(c, http.MethodGet, res, nil)
 }
 
 // GetProduct godoc
@@ -51,7 +52,7 @@ func (base *Controller) GetProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodGet, res)
+	httputil.NewResponse(c, http.MethodGet, res, nil)
 }
 
 // AddProduct godoc
@@ -78,7 +79,7 @@ func (base *Controller) AddProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPost, res)
+	httputil.NewResponse(c, http.MethodPost, res, nil)
 }
 
 // UpdateProduct godoc
@@ -117,7 +118,7 @@ func (base *Controller) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodPut, res)
+	httputil.NewResponse(c, http.MethodPut, res, nil)
 }
 
 // DeleteProduct godoc
@@ -142,7 +143,7 @@ func (base *Controller) DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, http.MethodDelete, res)
+	httputil.NewResponse(c, http.MethodDelete, res, nil)
 }
 
 func (base *Controller) CreateProductKeyPair(c *gin.Context) {
@@ -154,17 +155,11 @@ func (base *Controller) CreateProductKeyPair(c *gin.Context) {
 		return
 	}
 
-	product, err := service.FindById[model.Product](base.DB, productId)
+	kp, err := lm.CreateProductKeyPair(productId)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	kp, err := lm.CreateProductKeyPair(product.Name, productId)
-	if err != nil {
-		httputil.NewError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	httputil.NewResponse(c, http.MethodDelete, kp)
+	httputil.NewResponse(c, http.MethodPost, kp, nil)
 }

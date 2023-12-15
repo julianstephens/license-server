@@ -6,9 +6,10 @@ import (
 	"path"
 
 	jsoniter "github.com/json-iterator/go"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/logger"
-	"github.com/mitchellh/mapstructure"
 )
 
 type KeyFile struct {
@@ -39,8 +40,6 @@ func LoadKey(productId string, conf *model.Config) (*model.ProductKeyPair, error
 			}
 		}
 	}
-
-	logger.Infof("decoded kp: %v", pkp)
 
 	return &pkp, nil
 }

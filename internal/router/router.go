@@ -61,7 +61,7 @@ func Setup() *gin.Engine {
 	{
 		licenseGroup := protectedGroup.Group("/licenses")
 		{
-			licenseGroup.GET("/issue", api.IssueLicense)
+			licenseGroup.GET("/issue/:id", api.IssueLicense)
 			licenseGroup.POST("/validate/:id", api.ValidateLicense)
 		}
 	}
