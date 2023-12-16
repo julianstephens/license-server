@@ -24,6 +24,10 @@ lint:
 	@echo "[GOCI] Linting project files"
 	@golangci-lint run
 
+build:
+	@echo "[GOCI] Building CLI executable"
+	@go build -o app ./cmd/cli.go
+
 docs-swagger:
 	@echo "[SWAG] Generating OpenAPI 2.0 schema"
 	@swag init -g main.go
