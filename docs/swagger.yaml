@@ -31,12 +31,6 @@ definitions:
         example: status bad request
         type: string
     type: object
-  httputil.HTTPResponse-any:
-    properties:
-      data: {}
-      message:
-        type: string
-    type: object
   httputil.HTTPResponse-array_model_Product:
     properties:
       data:
@@ -55,6 +49,13 @@ definitions:
       message:
         type: string
     type: object
+  httputil.HTTPResponse-model_ActivationData:
+    properties:
+      data:
+        $ref: '#/definitions/model.ActivationData'
+      message:
+        type: string
+    type: object
   httputil.HTTPResponse-model_DisplayAPIKey:
     properties:
       data:
@@ -66,6 +67,13 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/model.Product'
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_ProductKeyPair:
+    properties:
+      data:
+        $ref: '#/definitions/model.ProductKeyPair'
       message:
         type: string
     type: object
@@ -82,6 +90,21 @@ definitions:
         $ref: '#/definitions/model.UserWithScopes'
       message:
         type: string
+    type: object
+  model.ActivationData:
+    properties:
+      expiration_date:
+        type: integer
+      issue_date:
+        type: integer
+      license_id:
+        type: string
+      product:
+        type: string
+      product_key:
+        type: string
+      refresh_date:
+        type: integer
     type: object
   model.DisplayAPIKey:
     properties:
@@ -110,6 +133,11 @@ definitions:
         type: string
     required:
     - key
+    type: object
+  model.LicenseRevokeRequest:
+    properties:
+      id:
+        type: string
     type: object
   model.Product:
     properties:
@@ -144,6 +172,17 @@ definitions:
         type: string
       updated_at:
         type: integer
+    type: object
+  model.ProductKeyPair:
+    properties:
+      id:
+        type: string
+      private_key:
+        type: string
+      product_id:
+        type: string
+      public_key:
+        type: string
     type: object
   model.User:
     properties:
@@ -286,6 +325,27 @@ paths:
       security:
       - ApiKey: []
       summary: Update a product
+      tags:
+      - products
+  /admin/products/:id/key:
+    get:
+      description: creates an ed25519 key pair for a specific product and version
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_ProductKeyPair'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Add a product key pair
       tags:
       - products
   /admin/users:
@@ -478,6 +538,32 @@ paths:
       summary: Create a token
       tags:
       - auth
+  /licenses/:id/revoke:
+    delete:
+      description: revokes a license with id
+      parameters:
+      - description: license id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LicenseRevokeRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Revoke a license
+      tags:
+      - licenses
   /licenses/issue:
     post:
       description: issues a new product license
@@ -492,7 +578,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputil.HTTPResponse-any'
+            $ref: '#/definitions/httputil.HTTPResponse-model_ActivationData'
         "400":
           description: Bad Request
           schema:

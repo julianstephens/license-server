@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/julianstephens/license-server/internal/model"
+	"github.com/julianstephens/license-server/pkg/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

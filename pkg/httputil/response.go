@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/julianstephens/license-server/pkg/service"
 )
 
 type HTTPResponse[T any] struct {
@@ -14,6 +16,7 @@ type HTTPResponse[T any] struct {
 type Options struct {
 	IsCrudHandler bool
 	HttpMsgMethod HTTPMethod
+	Status        int
 }
 
 type HTTPMethod int64
@@ -40,7 +43,7 @@ func (s HTTPMethod) String() string {
 }
 
 func NewResponse[T any](ctx *gin.Context, data T, opts Options) {
-	status := http.StatusOK
+	status := service.If(opts.Status > 0, opts.Status, http.StatusOK)
 
 	if !opts.IsCrudHandler {
 		ctx.JSON(status, data)

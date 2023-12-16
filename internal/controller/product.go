@@ -6,10 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/julianstephens/license-server/internal/licensemanager"
-	"github.com/julianstephens/license-server/internal/model"
-	"github.com/julianstephens/license-server/internal/service"
 	"github.com/julianstephens/license-server/pkg/httputil"
+	"github.com/julianstephens/license-server/pkg/licensemanager"
+	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/model"
+	"github.com/julianstephens/license-server/pkg/service"
 )
 
 // GetProducts godoc
@@ -21,6 +22,8 @@ import (
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/products [get]
 func (base *Controller) GetProducts(c *gin.Context) {
+	logger.Infof("retrieving all products as user <%s>", c.GetString("user"))
+
 	res, err := service.GetAll[model.Product](base.DB)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
@@ -45,6 +48,7 @@ func (base *Controller) GetProduct(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("retrieving product <%s> as user <%s>", productId, c.GetString("user"))
 
 	res, err := service.FindById[model.Product](base.DB, productId)
 	if err != nil {
@@ -66,6 +70,7 @@ func (base *Controller) GetProduct(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/products [post]
 func (base *Controller) AddProduct(c *gin.Context) {
+	logger.Infof("creating new product as user <%s>", c.GetString("user"))
 	var product *model.Product
 
 	if err := c.ShouldBindJSON(&product); err != nil {
@@ -100,6 +105,7 @@ func (base *Controller) UpdateProduct(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("updating product <%s> as user <%s>", productId, c.GetString("user"))
 
 	if err := c.ShouldBindJSON(&productUpdates); err != nil {
 		httputil.HandleFieldError(c, err)
@@ -136,6 +142,7 @@ func (base *Controller) DeleteProduct(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("deleting product <%s> as user <%s>", productId, c.GetString("user"))
 
 	res, err := service.Delete(base.DB, productId, &model.Product{})
 	if err != nil {
@@ -146,14 +153,24 @@ func (base *Controller) DeleteProduct(c *gin.Context) {
 	httputil.NewResponse(c, res, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Delete})
 }
 
+// CreateProductKeyPair godoc
+// @Summary Add a product key pair
+// @Description creates an ed25519 key pair for a specific product and version
+// @Tags products
+// @Security ApiKey
+// @Success 200 {object} httputil.HTTPResponse[model.ProductKeyPair]
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /admin/products/:id/key [get]
 func (base *Controller) CreateProductKeyPair(c *gin.Context) {
-	lm := licensemanager.LicenseManager{Config: base.Config}
+	lm := licensemanager.LicenseManager{Config: base.Config, DB: base.DB}
 
 	productId, err := service.GetId(c)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("generating new key pair for product <%s> as user <%s>", productId, c.GetString("user"))
 
 	kp, err := lm.CreateProductKeyPair(productId)
 	if err != nil {
@@ -161,5 +178,5 @@ func (base *Controller) CreateProductKeyPair(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, kp, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
+	httputil.NewResponse(c, kp, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
 }

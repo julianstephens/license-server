@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/julianstephens/license-server/internal/model"
+	"github.com/julianstephens/license-server/pkg/model"
 	"gorm.io/gorm"
 )
 

@@ -62,6 +62,7 @@ func Setup() *gin.Engine {
 		licenseGroup := protectedGroup.Group("/licenses")
 		{
 			licenseGroup.POST("/issue/:id", api.IssueLicense)
+			licenseGroup.DELETE("/:id/revoke", api.RevokeLicense)
 		}
 	}
 

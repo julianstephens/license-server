@@ -8,8 +8,8 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/model"
 )
 
 type KeyFile struct {

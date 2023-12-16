@@ -5,14 +5,16 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 
-	"github.com/julianstephens/license-server/internal/config"
-	appLogger "github.com/julianstephens/license-server/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"github.com/julianstephens/license-server/internal/config"
+	appLogger "github.com/julianstephens/license-server/pkg/logger"
 )
 
 var (
@@ -39,7 +41,7 @@ func GetDB() *gorm.DB {
 
 func setup() *gorm.DB {
 	var db *gorm.DB
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d", conf.Database.Host, conf.Database.User, conf.Database.Password, conf.Database.DB, conf.Database.Port)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", conf.Database.Host, conf.Database.User, conf.Database.Password, conf.Database.DB, strconv.Itoa(conf.Database.Port))
 
 	dbLogger := logger.New(
 		log.New(getWriter(), "\r\n", log.LstdFlags), // io writer

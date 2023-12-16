@@ -8,9 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
 
-	"github.com/julianstephens/license-server/internal/model"
-	"github.com/julianstephens/license-server/internal/service"
 	"github.com/julianstephens/license-server/pkg/httputil"
+	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/model"
+	"github.com/julianstephens/license-server/pkg/service"
 )
 
 type ScopeRequest struct {
@@ -27,6 +28,7 @@ type ScopeRequest struct {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users [get]
 func (base *Controller) GetUsers(c *gin.Context) {
+	logger.Infof("retrieving all users as user <%s>", c.GetString("user"))
 	res, err := service.GetAll[model.User](base.DB)
 	if err != nil {
 		httputil.NewError(c, http.StatusInternalServerError, err)
@@ -53,6 +55,7 @@ func (base *Controller) GetUser(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("no user id provided"))
 		return
 	}
+	logger.Infof("retrieving user <%s> as user <%s>", userId, c.GetString("user"))
 
 	user, err := service.FindById[model.User](base.DB, userId)
 	if err != nil {
@@ -81,6 +84,7 @@ func (base *Controller) GetUser(c *gin.Context) {
 // @Failure 500 {object} httputil.HTTPError
 // @Router /admin/users [post]
 func (base *Controller) AddUser(c *gin.Context) {
+	logger.Infof("creating new user as user <%s>", c.GetString("user"))
 	var user model.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -119,6 +123,7 @@ func (base *Controller) UpdateUser(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("updating user <%s> as user <%s>", userId, c.GetString("user"))
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
@@ -161,6 +166,7 @@ func (base *Controller) DeleteUser(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("deleting user <%s> as user <%s>", userId, c.GetString("user"))
 
 	res, err := service.Delete[model.User](base.DB, userId, model.User{})
 	if err != nil {
@@ -188,6 +194,7 @@ func (base *Controller) UpdateUserScopes(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	logger.Infof("updating scopes for user <%s> as user <%s>", userId, c.GetString("user"))
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httputil.HandleFieldError(c, err)

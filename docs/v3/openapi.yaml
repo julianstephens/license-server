@@ -149,6 +149,33 @@ paths:
       tags:
       - products
       x-codegen-request-body-name: data
+  /admin/products/:id/key:
+    get:
+      description: creates an ed25519 key pair for a specific product and version
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_ProductKeyPair'
+          description: OK
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Add a product key pair
+      tags:
+      - products
   /admin/users:
     get:
       description: retrieves all users
@@ -390,6 +417,38 @@ paths:
       tags:
       - auth
       x-codegen-request-body-name: data
+  /licenses/:id/revoke:
+    delete:
+      description: revokes a license with id
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/model.LicenseRevokeRequest'
+        description: license id
+        required: true
+      responses:
+        "204":
+          content: {}
+          description: No Content
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Bad Request
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/httputil.HTTPError'
+          description: Internal Server Error
+      security:
+      - ApiKey: []
+      summary: Revoke a license
+      tags:
+      - licenses
+      x-codegen-request-body-name: data
   /licenses/issue:
     post:
       description: issues a new product license
@@ -405,7 +464,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/httputil.HTTPResponse-any'
+                $ref: '#/components/schemas/httputil.HTTPResponse-model_ActivationData'
           description: OK
         "400":
           content:
@@ -456,16 +515,6 @@ components:
           type: integer
         message:
           example: status bad request
-          type: string
-      type: object
-    httputil.HTTPResponse-any:
-      example:
-        data: "{}"
-        message: message
-      properties:
-        data:
-          type: object
-        message:
           type: string
       type: object
     httputil.HTTPResponse-array_model_Product:
@@ -542,6 +591,22 @@ components:
         message:
           type: string
       type: object
+    httputil.HTTPResponse-model_ActivationData:
+      example:
+        data:
+          product: product
+          product_key: product_key
+          issue_date: 6
+          refresh_date: 1
+          license_id: license_id
+          expiration_date: 0
+        message: message
+      properties:
+        data:
+          $ref: '#/components/schemas/model.ActivationData'
+        message:
+          type: string
+      type: object
     httputil.HTTPResponse-model_DisplayAPIKey:
       example:
         data:
@@ -589,6 +654,20 @@ components:
         message:
           type: string
       type: object
+    httputil.HTTPResponse-model_ProductKeyPair:
+      example:
+        data:
+          public_key: public_key
+          product_id: product_id
+          private_key: private_key
+          id: id
+        message: message
+      properties:
+        data:
+          $ref: '#/components/schemas/model.ProductKeyPair'
+        message:
+          type: string
+      type: object
     httputil.HTTPResponse-model_User:
       example:
         data:
@@ -624,6 +703,28 @@ components:
           $ref: '#/components/schemas/model.UserWithScopes'
         message:
           type: string
+      type: object
+    model.ActivationData:
+      example:
+        product: product
+        product_key: product_key
+        issue_date: 6
+        refresh_date: 1
+        license_id: license_id
+        expiration_date: 0
+      properties:
+        expiration_date:
+          type: integer
+        issue_date:
+          type: integer
+        license_id:
+          type: string
+        product:
+          type: string
+        product_key:
+          type: string
+        refresh_date:
+          type: integer
       type: object
     model.DisplayAPIKey:
       example:
@@ -661,6 +762,11 @@ components:
           type: string
       required:
       - key
+      type: object
+    model.LicenseRevokeRequest:
+      properties:
+        id:
+          type: string
       type: object
     model.Product:
       example:
@@ -722,6 +828,22 @@ components:
           type: string
         updated_at:
           type: integer
+      type: object
+    model.ProductKeyPair:
+      example:
+        public_key: public_key
+        product_id: product_id
+        private_key: private_key
+        id: id
+      properties:
+        id:
+          type: string
+        private_key:
+          type: string
+        product_id:
+          type: string
+        public_key:
+          type: string
       type: object
     model.User:
       example:

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -44,7 +45,7 @@ func main() {
 		host = h
 	}
 	if p := conf.Server.Port; p > 0 {
-		port = fmt.Sprint(p)
+		port = strconv.Itoa(p)
 	}
 
 	logger.Infof("Licensing Server starting at %s:%s", host, port)

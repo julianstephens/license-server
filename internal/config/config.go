@@ -4,8 +4,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/julianstephens/license-server/internal/model"
 	"github.com/julianstephens/license-server/pkg/logger"
+	"github.com/julianstephens/license-server/pkg/model"
 	"github.com/spf13/viper"
 )
 
