@@ -4,9 +4,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/spf13/viper"
+
 	"github.com/julianstephens/license-server/pkg/logger"
 	"github.com/julianstephens/license-server/pkg/model"
-	"github.com/spf13/viper"
 )
 
 var (

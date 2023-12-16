@@ -13,6 +13,7 @@ type Server struct {
 	Port                 int    `mapstructure:"port"`
 	Env                  string `mapstructure:"env"`
 	KeyFile              string `mapstructure:"keyfile"`
+	LogFile              string `mapstructure:"logfile"`
 	OutDir               string `mapstructure:"outdir"`
 	LicenseLength        int    `mapstructure:"licenselength"`
 	DefaultLicenseLength int    `mapstructure:"default_license_term"`

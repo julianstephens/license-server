@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/alecthomas/kong"
 	"github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/posener/complete"
+	completion "github.com/willabides/kongplete"
 
 	"github.com/julianstephens/license-server/internal/config"
 	"github.com/julianstephens/license-server/pkg/database"
@@ -110,13 +114,29 @@ func (r *RevCmd) Run() error {
 }
 
 var CLI struct {
-	Gen GenCmd `cmd:"" help:"create a new key pair or license"`
-	Iss IssCmd `cmd:"" help:"Validate and assign a new license" `
-	Rev RevCmd `cmd:"" help:"Revoke an existing license"`
+	Gen        GenCmd                        `cmd:"" help:"Create a new key pair or license"`
+	Iss        IssCmd                        `cmd:"" help:"Validate and assign a license" `
+	Rev        RevCmd                        `cmd:"" help:"Revoke a license"`
+	Completion completion.InstallCompletions `cmd:"" help:"Install shell completions"`
 }
 
 func main() {
-	ctx := kong.Parse(&CLI, kong.Name("license-manager"), kong.Description("A CLI for managing software licenses"), kong.UsageOnError())
-	err := ctx.Run()
-	ctx.FatalIfErrorf(err)
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		homeDir = "."
+	}
+
+	logPath := path.Join(homeDir, "tmp", "lm.log")
+	logger.SetLogFile(&logPath)
+	app := kong.Must(&CLI, kong.Name("licmgr"), kong.Description("A CLI for managing software licenses"), kong.UsageOnError())
+
+	completion.Complete(app, completion.WithPredictor("file", complete.PredictFiles("*")))
+
+	ctx, err := app.Parse(os.Args[1:])
+	if err != nil {
+		app.Printf("%+v", err)
+		app.Exit(1)
+	}
+
+	ctx.FatalIfErrorf(ctx.Run())
 }

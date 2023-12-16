@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"path"
 	"runtime"
 	"strings"
 	"time"
@@ -11,10 +12,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var logger = logrus.New()
+var (
+	logger = logrus.New()
+)
 
 func init() {
-	logger.Out = getWriter()
 	logger.Level = logrus.InfoLevel
 	logger.Formatter = &formatter{}
 
@@ -67,8 +69,19 @@ func Fatalf(format string, args ...interface{}) {
 	}
 }
 
-func getWriter() io.Writer {
-	file, err := os.OpenFile("ls.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+func getWriter(logPath *string) io.Writer {
+	var path string
+	if logPath == nil {
+		path = "ls.log"
+	} else {
+		path = *logPath
+	}
+
+	if err := ensureDir(path); err != nil {
+		return os.Stdout
+	}
+
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		logger.Errorf("Failed to open log file: %v", err)
 		return os.Stdout
@@ -77,7 +90,22 @@ func getWriter() io.Writer {
 	}
 }
 
-// Formatter implements logrus.Formatter interface.
+func SetLogFile(path *string) {
+	logger.Out = getWriter(path)
+}
+
+func ensureDir(fileName string) error {
+	dirName := path.Dir(fileName)
+	if _, serr := os.Stat(dirName); serr != nil {
+		merr := os.MkdirAll(dirName, os.ModePerm)
+		if merr != nil {
+			return merr
+		}
+	}
+
+	return nil
+}
+
 type formatter struct {
 	prefix string
 }
@@ -86,7 +114,7 @@ type formatter struct {
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var sb bytes.Buffer
 
-	var newLine = "\n"
+	newLine := "\n"
 	if runtime.GOOS == "windows" {
 		newLine = "\r\n"
 	}

@@ -27,6 +27,7 @@ import (
 // @name X-API-KEY
 // @descripition User-specific API key
 func main() {
+	logger.SetLogFile(nil)
 	r := router.Setup()
 
 	r.GET("/api/v1/docs/*any",

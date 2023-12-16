@@ -2,11 +2,11 @@ package service
 
 import (
 	"bufio"
+	"errors"
 	"os"
 
-	"errors"
-
 	"github.com/gin-gonic/gin"
+
 	"github.com/julianstephens/license-server/pkg/logger"
 )
 
@@ -76,7 +76,6 @@ func GetId(ctx *gin.Context) (string, error) {
 
 func ReadFile(filename string) ([]byte, error) {
 	file, err := os.Open(filename)
-
 	if err != nil {
 		return nil, err
 	}

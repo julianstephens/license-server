@@ -21,12 +21,13 @@ down:
 	@docker compose down
 
 lint:
-	@echo "[GOCI] Linting project files"
+	@echo "[GOCI] Linting project files
 	@golangci-lint run
 
-build:
-	@echo "[GOCI] Building CLI executable"
-	@go build -o app ./cmd/cli.go
+cli:
+	@echo "[GOCI] Building and installing CLI executable"
+	@go install ./cmd/cli/main.go
+	@mv ${GOPATH}/bin/main ${GOPATH}/bin/licmgr
 
 docs-swagger:
 	@echo "[SWAG] Generating OpenAPI 2.0 schema"
