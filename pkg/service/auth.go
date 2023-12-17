@@ -7,15 +7,18 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/julianstephens/license-server/pkg/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"github.com/julianstephens/license-server/pkg/model"
 )
 
-const KeyByteSize int = 32
-const BcryptCost int = 14
+const (
+	KeyByteSize int = 32
+	BcryptCost  int = 14
+)
 
-func HashData(data any) ([]byte, error) {
+func HashPassword(data any) ([]byte, error) {
 	var bytes []byte
 	var err error
 
@@ -49,7 +52,7 @@ func GenerateKey(db *gorm.DB, userID string) (*model.DisplayAPIKey, error) {
 	uid := uuid.New().String()
 	apiKey := strings.Join(strings.Split(uid, "-"), "")
 
-	hashedKey, err := HashData(apiKey)
+	hashedKey, err := HashPassword(apiKey)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +64,7 @@ func GenerateKey(db *gorm.DB, userID string) (*model.DisplayAPIKey, error) {
 	}
 
 	err = db.Save(key).Error
-	return &model.DisplayAPIKey{Base: key.Base, UserId: userID, Key: apiKey, Mask: apiKey[:6], ExpiresAt: time.Unix(key.ExpiresAt, 0).Local().String()}, err
+	return &model.DisplayAPIKey{Base: key.Base, UserId: userID, Key: apiKey, Mask: apiKey[:6], ExpiresAt: time.Unix(key.ExpiresAt, 0).Local().Format(time.DateTime)}, err
 }
 
 func FindByKey(db *gorm.DB, key string) (*model.APIKey, error) {

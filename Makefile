@@ -21,8 +21,8 @@ down:
 	@docker compose down
 
 lint:
-	@echo "[GOCI] Linting project files
-	@golangci-lint run
+	@echo "[GOCI] Linting project files"
+	@golangci-lint run --tests=false
 
 cli:
 	@echo "[GOCI] Building and installing CLI executable"

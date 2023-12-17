@@ -35,8 +35,8 @@ func Setup() *gin.Engine {
 
 	docs.SwaggerInfo.BasePath = BasePath
 
-	db := database.GetDB()
 	conf := config.GetConfig()
+	db := database.GetDB()
 
 	api := controller.Controller{DB: db, Config: conf}
 

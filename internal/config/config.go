@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"strings"
 	"sync"
 
@@ -30,21 +31,35 @@ func GetConfig() *model.Config {
 func setup() (*model.Config, error) {
 	var conf model.Config
 
-	v := viper.New()
-	v.AutomaticEnv()
-	v.SetEnvPrefix("ls")
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AddConfigPath(".")
-	v.SetConfigName("config")
-	v.SetConfigType("yaml")
-
-	if err = v.ReadInConfig(); err != nil {
-		return nil, err
-	}
+	v := findConfigFile()
 
 	if err := v.Unmarshal(&conf); err != nil {
 		return nil, err
 	}
 
 	return &conf, nil
+}
+
+func findConfigFile() *viper.Viper {
+	var err error
+	path := "./"
+	v := viper.New()
+	for i := 0; i < 10; i++ {
+
+		v.AddConfigPath(path)
+		v.SetConfigName("config")
+		v.SetConfigType("yaml")
+		err = v.ReadInConfig()
+		if err != nil {
+			if strings.Contains(err.Error(), "Not Found") {
+				path = path + "../"
+				continue
+			}
+			log.Fatal("panic in config parser : " + err.Error())
+		} else {
+			break
+		}
+	}
+
+	return v
 }

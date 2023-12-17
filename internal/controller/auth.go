@@ -13,23 +13,17 @@ import (
 	"github.com/julianstephens/license-server/pkg/service"
 )
 
-type AuthRequest struct {
-	Name     string `binding:"omitempty"`
-	Email    string `binding:"required,email"`
-	Password string
-}
-
 // Register godoc
 // @Summary Register a user
 // @Description registers new application user
 // @Tags auth
-// @Param data body AuthRequest true "new user info"
+// @Param data body model.AuthRequest true "new user info"
 // @Success 200 {object} httputil.HTTPResponse[model.User]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/register [post]
 func (base *Controller) Register(c *gin.Context) {
-	var req AuthRequest
+	var req model.AuthRequest
 	var user model.User
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -37,7 +31,7 @@ func (base *Controller) Register(c *gin.Context) {
 		return
 	}
 
-	hashedPassword, err := service.HashData(req.Password)
+	hashedPassword, err := service.HashPassword(req.Password)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("unable to parse password"))
 		return
@@ -64,13 +58,13 @@ func (base *Controller) Register(c *gin.Context) {
 // @Summary Create a token
 // @Description creates a new API key
 // @Tags auth
-// @Param data body AuthRequest true "returning user info"
+// @Param data body model.AuthRequest true "returning user info"
 // @Success 200 {object} httputil.HTTPResponse[model.DisplayAPIKey]
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
 // @Router /auth/token [post]
 func (base *Controller) CreateToken(c *gin.Context) {
-	var req AuthRequest
+	var req model.AuthRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httputil.HandleFieldError(c, err)
@@ -95,7 +89,7 @@ func (base *Controller) CreateToken(c *gin.Context) {
 		return
 	}
 
-	httputil.NewResponse(c, key, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Get})
+	httputil.NewResponse(c, key, httputil.Options{IsCrudHandler: true, HttpMsgMethod: httputil.Post})
 }
 
 func (base *Controller) Authorize(key string, scopes ...string) (bool, string, error) {
