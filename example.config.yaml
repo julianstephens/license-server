@@ -1,0 +1,15 @@
+database:
+  user:
+  password:
+  dbname:
+  host:
+  port:
+server:
+  host:
+  port:
+  env:
+  outdir:
+  keyfile:
+  default_license_term:
+  maximum_Offline_duration:
+  version:
