@@ -195,6 +195,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/products/:id/key": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "creates an ed25519 key pair for a specific product and version",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Add a product key pair",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_ProductKeyPair"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "security": [
@@ -494,6 +528,93 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/licenses/:id/revoke": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "revokes a license with id",
+                "tags": [
+                    "licenses"
+                ],
+                "summary": "Revoke a license",
+                "parameters": [
+                    {
+                        "description": "license id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LicenseRevokeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/licenses/issue": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ],
+                "description": "issues a new product license",
+                "tags": [
+                    "licenses"
+                ],
+                "summary": "Issue a license",
+                "parameters": [
+                    {
+                        "description": "new license info",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LicenseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPResponse-model_ActivationData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -572,6 +693,17 @@ const docTemplate = `{
                 }
             }
         },
+        "httputil.HTTPResponse-model_ActivationData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ActivationData"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "httputil.HTTPResponse-model_DisplayAPIKey": {
             "type": "object",
             "properties": {
@@ -588,6 +720,17 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "$ref": "#/definitions/model.Product"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "httputil.HTTPResponse-model_ProductKeyPair": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.ProductKeyPair"
                 },
                 "message": {
                     "type": "string"
@@ -613,6 +756,29 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "model.ActivationData": {
+            "type": "object",
+            "properties": {
+                "expiration_date": {
+                    "type": "integer"
+                },
+                "issue_date": {
+                    "type": "integer"
+                },
+                "license_id": {
+                    "type": "string"
+                },
+                "product": {
+                    "type": "string"
+                },
+                "product_key": {
+                    "type": "string"
+                },
+                "refresh_date": {
+                    "type": "integer"
                 }
             }
         },
@@ -645,34 +811,24 @@ const docTemplate = `{
                 }
             }
         },
-        "model.License": {
+        "model.LicenseRequest": {
+            "type": "object",
+            "required": [
+                "key"
+            ],
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "machine": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.LicenseRevokeRequest": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "deleted_at": {
-                    "type": "integer"
-                },
                 "id": {
-                    "type": "string"
-                },
-                "product": {
-                    "$ref": "#/definitions/model.Product"
-                },
-                "product_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "integer"
-                },
-                "user": {
-                    "$ref": "#/definitions/model.User"
-                },
-                "user_id": {
-                    "type": "string"
-                },
-                "value": {
                     "type": "string"
                 }
             }
@@ -686,30 +842,27 @@ const docTemplate = `{
                 "deleted_at": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "string"
-                },
-                "licenses": {
+                "features": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.License"
+                        "$ref": "#/definitions/model.ProductFeature"
                     }
+                },
+                "id": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Rule"
-                    }
-                },
                 "updated_at": {
                     "type": "integer"
+                },
+                "version": {
+                    "type": "string"
                 }
             }
         },
-        "model.Rule": {
+        "model.ProductFeature": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -724,34 +877,33 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Product"
-                    }
+                "product_id": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.ProductKeyPair": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
                 },
-                "user_groups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.UserGroup"
-                    }
+                "private_key": {
+                    "type": "string"
                 },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.User"
-                    }
+                "product_id": {
+                    "type": "string"
+                },
+                "public_key": {
+                    "type": "string"
                 }
             }
         },
         "model.User": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "created_at": {
                     "type": "integer"
@@ -762,12 +914,6 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "groups": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.UserGroup"
-                    }
-                },
                 "id": {
                     "type": "string"
                 },
@@ -776,38 +922,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "integer"
-                }
-            }
-        },
-        "model.UserGroup": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "deleted_at": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rules": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Rule"
-                    }
-                },
-                "updated_at": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.User"
-                    }
                 }
             }
         },

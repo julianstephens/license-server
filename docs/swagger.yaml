@@ -49,6 +49,13 @@ definitions:
       message:
         type: string
     type: object
+  httputil.HTTPResponse-model_ActivationData:
+    properties:
+      data:
+        $ref: '#/definitions/model.ActivationData'
+      message:
+        type: string
+    type: object
   httputil.HTTPResponse-model_DisplayAPIKey:
     properties:
       data:
@@ -60,6 +67,13 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/model.Product'
+      message:
+        type: string
+    type: object
+  httputil.HTTPResponse-model_ProductKeyPair:
+    properties:
+      data:
+        $ref: '#/definitions/model.ProductKeyPair'
       message:
         type: string
     type: object
@@ -76,6 +90,21 @@ definitions:
         $ref: '#/definitions/model.UserWithScopes'
       message:
         type: string
+    type: object
+  model.ActivationData:
+    properties:
+      expiration_date:
+        type: integer
+      issue_date:
+        type: integer
+      license_id:
+        type: string
+      product:
+        type: string
+      product_key:
+        type: string
+      refresh_date:
+        type: integer
     type: object
   model.DisplayAPIKey:
     properties:
@@ -96,25 +125,18 @@ definitions:
       user_id:
         type: string
     type: object
-  model.License:
+  model.LicenseRequest:
     properties:
-      created_at:
-        type: integer
-      deleted_at:
-        type: integer
+      key:
+        type: string
+      machine:
+        type: string
+    required:
+    - key
+    type: object
+  model.LicenseRevokeRequest:
+    properties:
       id:
-        type: string
-      product:
-        $ref: '#/definitions/model.Product'
-      product_id:
-        type: string
-      updated_at:
-        type: integer
-      user:
-        $ref: '#/definitions/model.User'
-      user_id:
-        type: string
-      value:
         type: string
     type: object
   model.Product:
@@ -123,22 +145,20 @@ definitions:
         type: integer
       deleted_at:
         type: integer
+      features:
+        items:
+          $ref: '#/definitions/model.ProductFeature'
+        type: array
       id:
         type: string
-      licenses:
-        items:
-          $ref: '#/definitions/model.License'
-        type: array
       name:
         type: string
-      rules:
-        items:
-          $ref: '#/definitions/model.Rule'
-        type: array
       updated_at:
         type: integer
+      version:
+        type: string
     type: object
-  model.Rule:
+  model.ProductFeature:
     properties:
       created_at:
         type: integer
@@ -148,20 +168,21 @@ definitions:
         type: string
       name:
         type: string
-      products:
-        items:
-          $ref: '#/definitions/model.Product'
-        type: array
+      product_id:
+        type: string
       updated_at:
         type: integer
-      user_groups:
-        items:
-          $ref: '#/definitions/model.UserGroup'
-        type: array
-      users:
-        items:
-          $ref: '#/definitions/model.User'
-        type: array
+    type: object
+  model.ProductKeyPair:
+    properties:
+      id:
+        type: string
+      private_key:
+        type: string
+      product_id:
+        type: string
+      public_key:
+        type: string
     type: object
   model.User:
     properties:
@@ -171,39 +192,12 @@ definitions:
         type: integer
       email:
         type: string
-      groups:
-        items:
-          $ref: '#/definitions/model.UserGroup'
-        type: array
       id:
         type: string
       name:
         type: string
       updated_at:
         type: integer
-    required:
-    - email
-    type: object
-  model.UserGroup:
-    properties:
-      created_at:
-        type: integer
-      deleted_at:
-        type: integer
-      id:
-        type: string
-      name:
-        type: string
-      rules:
-        items:
-          $ref: '#/definitions/model.Rule'
-        type: array
-      updated_at:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/model.User'
-        type: array
     type: object
   model.UserWithScopes:
     properties:
@@ -331,6 +325,27 @@ paths:
       security:
       - ApiKey: []
       summary: Update a product
+      tags:
+      - products
+  /admin/products/:id/key:
+    get:
+      description: creates an ed25519 key pair for a specific product and version
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_ProductKeyPair'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Add a product key pair
       tags:
       - products
   /admin/users:
@@ -523,6 +538,60 @@ paths:
       summary: Create a token
       tags:
       - auth
+  /licenses/:id/revoke:
+    delete:
+      description: revokes a license with id
+      parameters:
+      - description: license id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LicenseRevokeRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Revoke a license
+      tags:
+      - licenses
+  /licenses/issue:
+    post:
+      description: issues a new product license
+      parameters:
+      - description: new license info
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LicenseRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputil.HTTPResponse-model_ActivationData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKey: []
+      summary: Issue a license
+      tags:
+      - licenses
 schemes:
 - http
 securityDefinitions:

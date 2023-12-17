@@ -228,6 +228,48 @@
         "x-codegen-request-body-name" : "data"
       }
     },
+    "/admin/products/:id/key" : {
+      "get" : {
+        "description" : "creates an ed25519 key pair for a specific product and version",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_ProductKeyPair"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Add a product key pair",
+        "tags" : [ "products" ]
+      }
+    },
     "/admin/users" : {
       "get" : {
         "description" : "retrieves all users",
@@ -598,6 +640,108 @@
         "tags" : [ "auth" ],
         "x-codegen-request-body-name" : "data"
       }
+    },
+    "/licenses/:id/revoke" : {
+      "delete" : {
+        "description" : "revokes a license with id",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.LicenseRevokeRequest"
+              }
+            }
+          },
+          "description" : "license id",
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "content" : { },
+            "description" : "No Content"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Revoke a license",
+        "tags" : [ "licenses" ],
+        "x-codegen-request-body-name" : "data"
+      }
+    },
+    "/licenses/issue" : {
+      "post" : {
+        "description" : "issues a new product license",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/model.LicenseRequest"
+              }
+            }
+          },
+          "description" : "new license info",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPResponse-model_ActivationData"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Bad Request"
+          },
+          "500" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/httputil.HTTPError"
+                }
+              }
+            },
+            "description" : "Internal Server Error"
+          }
+        },
+        "security" : [ {
+          "ApiKey" : [ ]
+        } ],
+        "summary" : "Issue a license",
+        "tags" : [ "licenses" ],
+        "x-codegen-request-body-name" : "data"
+      }
     }
   },
   "components" : {
@@ -675,6 +819,17 @@
         },
         "type" : "object"
       },
+      "httputil.HTTPResponse-model_ActivationData" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.ActivationData"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "httputil.HTTPResponse-model_DisplayAPIKey" : {
         "properties" : {
           "data" : {
@@ -690,6 +845,17 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/model.Product"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "httputil.HTTPResponse-model_ProductKeyPair" : {
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/model.ProductKeyPair"
           },
           "message" : {
             "type" : "string"
@@ -715,6 +881,29 @@
           },
           "message" : {
             "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "model.ActivationData" : {
+        "properties" : {
+          "expiration_date" : {
+            "type" : "integer"
+          },
+          "issue_date" : {
+            "type" : "integer"
+          },
+          "license_id" : {
+            "type" : "string"
+          },
+          "product" : {
+            "type" : "string"
+          },
+          "product_key" : {
+            "type" : "string"
+          },
+          "refresh_date" : {
+            "type" : "integer"
           }
         },
         "type" : "object"
@@ -748,33 +937,21 @@
         },
         "type" : "object"
       },
-      "model.License" : {
+      "model.LicenseRequest" : {
         "properties" : {
-          "created_at" : {
-            "type" : "integer"
+          "key" : {
+            "type" : "string"
           },
-          "deleted_at" : {
-            "type" : "integer"
-          },
+          "machine" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "key" ],
+        "type" : "object"
+      },
+      "model.LicenseRevokeRequest" : {
+        "properties" : {
           "id" : {
-            "type" : "string"
-          },
-          "product" : {
-            "$ref" : "#/components/schemas/model.Product"
-          },
-          "product_id" : {
-            "type" : "string"
-          },
-          "updated_at" : {
-            "type" : "integer"
-          },
-          "user" : {
-            "$ref" : "#/components/schemas/model.User"
-          },
-          "user_id" : {
-            "type" : "string"
-          },
-          "value" : {
             "type" : "string"
           }
         },
@@ -788,31 +965,28 @@
           "deleted_at" : {
             "type" : "integer"
           },
-          "id" : {
-            "type" : "string"
-          },
-          "licenses" : {
+          "features" : {
             "items" : {
-              "$ref" : "#/components/schemas/model.License"
+              "$ref" : "#/components/schemas/model.ProductFeature"
             },
             "type" : "array"
+          },
+          "id" : {
+            "type" : "string"
           },
           "name" : {
             "type" : "string"
           },
-          "rules" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.Rule"
-            },
-            "type" : "array"
-          },
           "updated_at" : {
             "type" : "integer"
+          },
+          "version" : {
+            "type" : "string"
           }
         },
         "type" : "object"
       },
-      "model.Rule" : {
+      "model.ProductFeature" : {
         "properties" : {
           "created_at" : {
             "type" : "integer"
@@ -826,26 +1000,28 @@
           "name" : {
             "type" : "string"
           },
-          "products" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.Product"
-            },
-            "type" : "array"
+          "product_id" : {
+            "type" : "string"
           },
           "updated_at" : {
             "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "model.ProductKeyPair" : {
+        "properties" : {
+          "id" : {
+            "type" : "string"
           },
-          "user_groups" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.UserGroup"
-            },
-            "type" : "array"
+          "private_key" : {
+            "type" : "string"
           },
-          "users" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.User"
-            },
-            "type" : "array"
+          "product_id" : {
+            "type" : "string"
+          },
+          "public_key" : {
+            "type" : "string"
           }
         },
         "type" : "object"
@@ -861,12 +1037,6 @@
           "email" : {
             "type" : "string"
           },
-          "groups" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.UserGroup"
-            },
-            "type" : "array"
-          },
           "id" : {
             "type" : "string"
           },
@@ -875,39 +1045,6 @@
           },
           "updated_at" : {
             "type" : "integer"
-          }
-        },
-        "required" : [ "email" ],
-        "type" : "object"
-      },
-      "model.UserGroup" : {
-        "properties" : {
-          "created_at" : {
-            "type" : "integer"
-          },
-          "deleted_at" : {
-            "type" : "integer"
-          },
-          "id" : {
-            "type" : "string"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "rules" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.Rule"
-            },
-            "type" : "array"
-          },
-          "updated_at" : {
-            "type" : "integer"
-          },
-          "users" : {
-            "items" : {
-              "$ref" : "#/components/schemas/model.User"
-            },
-            "type" : "array"
           }
         },
         "type" : "object"

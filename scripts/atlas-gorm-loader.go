@@ -7,16 +7,16 @@ import (
 
 	_ "ariga.io/atlas-go-sdk/recordriver"
 	"ariga.io/atlas-provider-gorm/gormschema"
-	"github.com/julianstephens/license-server/model"
+
+	"github.com/julianstephens/license-server/pkg/model"
 )
 
 // Define the models to generate migrations for.
 var models = []any{
 	&model.User{},
 	&model.Product{},
+	&model.ProductFeature{},
 	&model.License{},
-	&model.Rule{},
-	&model.UserGroup{},
 	&model.APIKey{},
 }
 

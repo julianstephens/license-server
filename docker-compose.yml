@@ -6,9 +6,9 @@ services:
     image: postgres:alpine
     restart: always
     environment:
-      POSTGRES_USER: ${LS_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${LS_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${LS_POSTGRES_DB}
+      POSTGRES_USER: ${LS_DATABASE_USER}
+      POSTGRES_PASSWORD: ${LS_DATABASE_PASSWORD}
+      POSTGRES_DB: ${LS_DATABASE_DB}
     ports:
       - 5432:5432
     volumes:
@@ -16,41 +16,33 @@ services:
       # - ./backend/database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       # named volume
       - ls-pg-data:/var/lib/postgresql/data
-  redis:
-    image: redis/redis-stack:latest
-    container_name: redis
-    hostname: redis
-    ports:
-      - 6379:6379
-      - 8001:8001
-    restart: always
   app:
     container_name: app
     build:
       context: .
       target: ${LS_APP_ENV}
       args:
-        APP_HOME: ${LS_APP_HOME}
+        APP_HOME: ${APP_HOME}
     env_file: .env
     ports:
       - 8080:8080
     links:
       - database
     volumes:
-      - ./:${LS_APP_HOME}
+      - ./:${APP_HOME}
   swagger-gen:
     container_name: swagger-gen
     build:
       context: .
       target: ${LS_APP_ENV}
       args:
-        APP_HOME: ${LS_APP_HOME}
+        APP_HOME: ${APP_HOME}
       dockerfile: ./docs.Dockerfile
     env_file: .env
     links:
       - database
     volumes:
-      - ./:${LS_APP_HOME}
+      - ./:${APP_HOME}
   swagger-ui:
     image: node:alpine
     container_name: swagger-ui
@@ -59,8 +51,8 @@ services:
     links:
       - swagger-gen
     volumes:
-      - ./docs/v3/index.html:${LS_APP_HOME}/index.html
-    command: sh -c "npm i -g live-server && live-server --host=0.0.0.0 ${LS_APP_HOME}/index.html"
+      - ./docs/v3/index.html:${APP_HOME}/index.html
+    command: sh -c "npm i -g live-server && live-server --host=0.0.0.0 ${APP_HOME}/index.html"
 volumes:
   ls-pg-data:
     external: true

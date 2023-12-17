@@ -2,6 +2,7 @@
 .env*
 !.env.example
 !.env.vault
+config.yaml
 
 # testing
 coverage
@@ -41,14 +42,19 @@ Thumbs.db
 # Go builds
 **/app/
 **/build/
+**/bin/
 
 # Temporary files
 tmp/
 
 # Files
 *.out
+out/
 
+# Logs
+**/*.log
 
+# OpenAPI
 **/.openapi-generator/**
 **/.openapi-generator-*
 openapitools.json

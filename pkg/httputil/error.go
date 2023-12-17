@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
 type HTTPError struct {
@@ -20,8 +21,12 @@ type ValidationError struct {
 }
 
 func NewError(ctx *gin.Context, status int, err error) {
+	httpStatus := status
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		httpStatus = http.StatusNotFound
+	}
 	er := HTTPError{
-		Code:    status,
+		Code:    httpStatus,
 		Message: err.Error(),
 	}
 	ctx.JSON(status, er)

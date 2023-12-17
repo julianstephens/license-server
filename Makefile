@@ -3,7 +3,7 @@
 include .env
 $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 
-DATABASE_URL="postgres://${LS_POSTGRES_USER}:${LS_POSTGRES_PASSWORD}@${MIGRATION_HOST}:5432/${LS_POSTGRES_DB}?sslmode=disable&search_path=public"
+DATABASE_URL="postgres://${LS_DATABASE_USER}:${LS_DATABASE_PASSWORD}@${MIGRATION_HOST}:5432/${LS_DATABASE_DB}?sslmode=disable&search_path=public"
 MIGRATION_NAME ?= $(shell bash -c 'read -p "Migration name: " migration_name; echo $$migration_name')
 
 .PHONY: up down stop lint docs-% db-%
@@ -22,7 +22,17 @@ down:
 
 lint:
 	@echo "[GOCI] Linting project files"
-	@golangci-lint run
+	@golangci-lint run --tests=false
+
+cli:
+	@echo "[GOCI] Building and installing CLI executable"
+	@go install ./cmd/cli/main.go
+	@mv ${GOPATH}/bin/main ${GOPATH}/bin/licmgr
+
+coverage:
+	@echo "[TEST] Generating coverage report"
+	@go test -coverprofile=c.out
+	@go tool cover -html=c.out -o coverage.html
 
 docs-swagger:
 	@echo "[SWAG] Generating OpenAPI 2.0 schema"
