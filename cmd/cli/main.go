@@ -118,6 +118,7 @@ var CLI struct {
 	Iss        IssCmd                        `cmd:"" help:"Validate and assign a license" `
 	Rev        RevCmd                        `cmd:"" help:"Revoke a license"`
 	Completion completion.InstallCompletions `cmd:"" help:"Install shell completions"`
+	Version    kong.VersionFlag
 }
 
 func main() {
@@ -128,7 +129,7 @@ func main() {
 
 	logPath := path.Join(homeDir, "tmp", "lm.log")
 	logger.SetLogFile(&logPath)
-	app := kong.Must(&CLI, kong.Name("licmgr"), kong.Description("A CLI for managing software licenses"), kong.UsageOnError())
+	app := kong.Must(&CLI, kong.Name("licmgr"), kong.Description("A CLI for managing software licenses"), kong.Vars{"version": conf.Server.Version}, kong.UsageOnError())
 
 	completion.Complete(app, completion.WithPredictor("file", complete.PredictFiles("*")))
 

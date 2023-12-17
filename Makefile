@@ -29,6 +29,11 @@ cli:
 	@go install ./cmd/cli/main.go
 	@mv ${GOPATH}/bin/main ${GOPATH}/bin/licmgr
 
+coverage:
+	@echo "[TEST] Generating coverage report"
+	@go test -coverprofile=c.out
+	@go tool cover -html=c.out -o coverage.html
+
 docs-swagger:
 	@echo "[SWAG] Generating OpenAPI 2.0 schema"
 	@swag init -g main.go

@@ -18,6 +18,7 @@ type Server struct {
 	LicenseLength        int    `mapstructure:"licenselength"`
 	DefaultLicenseLength int    `mapstructure:"default_license_term"`
 	MaxOfflineDuration   int    `mapstructure:"maximum_Offline_duration"`
+	Version              string `mapstructure:"version"`
 }
 
 type Config struct {
