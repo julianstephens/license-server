@@ -23,4 +23,9 @@ On receipt of the activation data, the client should store it locally and repeat
 
 ### API Docs
 
-[https://julianstephens.github.io/license-server/v3/](https://julianstephens.github.io/license-server/v3/)
+<a href="https://julianstephens.github.io/license-server/v3/" target="_blank">https://julianstephens.github.io/license-server/v3/</a>
+
+### Future Work
+
+- Management GUI
+- Client libraries
