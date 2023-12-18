@@ -20,3 +20,7 @@ The CLI can also be used to manage licenses, additionally, it provides functiona
 2. Metadata json is hashed and signed with the product/version private key
 3. Signature is AES encrypted and base58 encoded for distribution as the product key
 4. License is stored in db as `{"key": encrypted signature, "attributes": license metadata}`
+
+### API Docs
+
+[https://julianstephens.github.io/license-server/v3/](https://julianstephens.github.io/license-server/v3/)
