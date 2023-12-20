@@ -6,7 +6,7 @@ $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
 DATABASE_URL="postgres://${LS_DATABASE_USER}:${LS_DATABASE_PASSWORD}@${MIGRATION_HOST}:5432/${LS_DATABASE_DB}?sslmode=disable&search_path=public"
 MIGRATION_NAME ?= $(shell bash -c 'read -p "Migration name: " migration_name; echo $$migration_name')
 
-.PHONY: up down stop lint docs-% db-%
+.PHONY: up down stop lint db-%
 
 up:
 	@echo "[DCKR] Building and starting all containers"
@@ -33,27 +33,6 @@ coverage:
 	@echo "[TEST] Generating coverage report"
 	@go test -coverprofile=c.out
 	@go tool cover -html=c.out -o coverage.html
-
-docs-swagger:
-	@echo "[SWAG] Generating OpenAPI 2.0 schema"
-	@swag init -g main.go
-
-docs-convert:
-	@echo "[OAS3] Converting Swagger 2-to-3 (yaml)"
-	@openapi-generator-cli generate -i ./docs/swagger.yaml -o ./docs/v3 -g openapi-yaml --minimal-update
-	@echo "[OAS3] Copying openapi-generator-ignore (json)"
-	@openapi-generator-cli generate -s -i ./docs/swagger.json -o ./docs/v3/openapi -g openapi --minimal-update
-	@echo "[OAS3] Cleaning up generated files"
-	@mv -f ./docs/v3/openapi/openapi.json ./docs/v3 ; mv -f ./docs/v3/openapi/openapi.yaml ./docs/v3 ; rm -rf ./docs/v3/openapi
-
-docs-build:
-	@echo "[REDC] Building Redocly API preview"
-	@redocly build-docs ./docs/v3/openapi.yaml --config ./docs/redocly.yaml --output ./docs/v3/index.html
-
-docs-gen:
-	@make docs-swagger
-	@make docs-convert
-	@make docs-build
 
 db-clean:
 	@echo "[ATLS] Clearing DB"

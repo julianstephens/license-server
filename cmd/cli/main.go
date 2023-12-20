@@ -11,11 +11,11 @@ import (
 	"github.com/posener/complete"
 	completion "github.com/willabides/kongplete"
 
-	"github.com/julianstephens/license-server/internal/config"
-	"github.com/julianstephens/license-server/pkg/database"
-	"github.com/julianstephens/license-server/pkg/licensemanager"
-	"github.com/julianstephens/license-server/pkg/logger"
-	"github.com/julianstephens/license-server/pkg/service"
+	"github.com/julianstephens/license-server/backend/pkg/config"
+	"github.com/julianstephens/license-server/backend/pkg/database"
+	"github.com/julianstephens/license-server/backend/pkg/licensemanager"
+	"github.com/julianstephens/license-server/backend/pkg/logger"
+	"github.com/julianstephens/license-server/backend/pkg/service"
 )
 
 var (

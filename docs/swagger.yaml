@@ -1,16 +1,4 @@
-basePath: /api/v1
 definitions:
-  controller.AuthRequest:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    type: object
   controller.ScopeRequest:
     properties:
       add:
@@ -91,6 +79,27 @@ definitions:
       message:
         type: string
     type: object
+  model.APIKey:
+    properties:
+      authentication_scopes:
+        type: string
+      created_at:
+        type: integer
+      deleted_at:
+        type: integer
+      expires_at:
+        type: integer
+      id:
+        type: string
+      key:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: integer
+      user_id:
+        type: string
+    type: object
   model.ActivationData:
     properties:
       expiration_date:
@@ -105,6 +114,17 @@ definitions:
         type: string
       refresh_date:
         type: integer
+    type: object
+  model.AuthRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
     type: object
   model.DisplayAPIKey:
     properties:
@@ -186,6 +206,10 @@ definitions:
     type: object
   model.User:
     properties:
+      apiKeys:
+        items:
+          $ref: '#/definitions/model.APIKey'
+        type: array
       created_at:
         type: integer
       deleted_at:
@@ -208,12 +232,8 @@ definitions:
       user:
         $ref: '#/definitions/model.User'
     type: object
-host: localhost:8080
 info:
   contact: {}
-  description: REST API for managing software licenses
-  title: License Server API
-  version: 0.1.0
 paths:
   /admin/products:
     get:
@@ -495,7 +515,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/controller.AuthRequest'
+          $ref: '#/definitions/model.AuthRequest'
       responses:
         "200":
           description: OK
@@ -521,7 +541,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/controller.AuthRequest'
+          $ref: '#/definitions/model.AuthRequest'
       responses:
         "200":
           description: OK
@@ -592,11 +612,4 @@ paths:
       summary: Issue a license
       tags:
       - licenses
-schemes:
-- http
-securityDefinitions:
-  ApiKey:
-    in: header
-    name: X-API-KEY
-    type: apiKey
 swagger: "2.0"
