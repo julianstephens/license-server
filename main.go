@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/wailsapp/wails/v2"
@@ -36,10 +37,10 @@ func (h *FileLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var err error
 	requestedFilename := strings.TrimPrefix(req.URL.Path, "/")
 	println("Requesting file:", requestedFilename)
-	fileData, err := os.ReadFile(requestedFilename)
+	fileData, err := os.ReadFile(path.Join("frontend", "src", "assets", requestedFilename))
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		_, writeErr := res.Write([]byte(fmt.Sprintf("Could not load file %s", requestedFilename)))
+		_, writeErr := res.Write([]byte(fmt.Sprintf("Could not load your file %s", requestedFilename)))
 		if writeErr != nil {
 			log.Fatalf(err.Error())
 		}
