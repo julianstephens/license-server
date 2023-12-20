@@ -16,43 +16,6 @@ services:
       # - ./backend/database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       # named volume
       - ls-pg-data:/var/lib/postgresql/data
-  app:
-    container_name: app
-    build:
-      context: .
-      target: ${LS_APP_ENV}
-      args:
-        APP_HOME: ${APP_HOME}
-    env_file: .env
-    ports:
-      - 8080:8080
-    links:
-      - database
-    volumes:
-      - ./:${APP_HOME}
-  swagger-gen:
-    container_name: swagger-gen
-    build:
-      context: .
-      target: ${LS_APP_ENV}
-      args:
-        APP_HOME: ${APP_HOME}
-      dockerfile: ./docs.Dockerfile
-    env_file: .env
-    links:
-      - database
-    volumes:
-      - ./:${APP_HOME}
-  swagger-ui:
-    image: node:alpine
-    container_name: swagger-ui
-    ports:
-      - 8082:8080
-    links:
-      - swagger-gen
-    volumes:
-      - ./docs/v3/index.html:${APP_HOME}/index.html
-    command: sh -c "npm i -g live-server && live-server --host=0.0.0.0 ${APP_HOME}/index.html"
 volumes:
   ls-pg-data:
     external: true

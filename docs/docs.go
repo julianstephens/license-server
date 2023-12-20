@@ -463,7 +463,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.AuthRequest"
+                            "$ref": "#/definitions/model.AuthRequest"
                         }
                     }
                 ],
@@ -503,7 +503,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.AuthRequest"
+                            "$ref": "#/definitions/model.AuthRequest"
                         }
                     }
                 ],
@@ -618,23 +618,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controller.AuthRequest": {
-            "type": "object",
-            "required": [
-                "email"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "controller.ScopeRequest": {
             "type": "object",
             "properties": {
@@ -759,6 +742,38 @@ const docTemplate = `{
                 }
             }
         },
+        "model.APIKey": {
+            "type": "object",
+            "properties": {
+                "authentication_scopes": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "deleted_at": {
+                    "type": "integer"
+                },
+                "expires_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "updated_at": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ActivationData": {
             "type": "object",
             "properties": {
@@ -779,6 +794,23 @@ const docTemplate = `{
                 },
                 "refresh_date": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.AuthRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },
@@ -905,6 +937,12 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
+                "apiKeys": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.APIKey"
+                    }
+                },
                 "created_at": {
                     "type": "integer"
                 },
@@ -939,24 +977,17 @@ const docTemplate = `{
                 }
             }
         }
-    },
-    "securityDefinitions": {
-        "ApiKey": {
-            "type": "apiKey",
-            "name": "X-API-KEY",
-            "in": "header"
-        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
-	Schemes:          []string{"http"},
-	Title:            "License Server API",
-	Description:      "REST API for managing software licenses",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
+	Schemes:          []string{},
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
