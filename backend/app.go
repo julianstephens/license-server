@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"github.com/julianstephens/license-server/backend/pkg/authserver"
 	"github.com/julianstephens/license-server/backend/pkg/config"
 	"github.com/julianstephens/license-server/backend/pkg/database"
 	"github.com/julianstephens/license-server/backend/pkg/logger"
@@ -76,6 +77,10 @@ func (a *App) Register(req model.AuthRequest) (model.User, error) {
 
 	logger.Infof("registered user with email: %s", user.Email)
 	return *returned, nil
+}
+
+func (a *App) Auth() error {
+	return authserver.Guard(a.Conf)
 }
 
 // CreateToken creates a new API key for a given user

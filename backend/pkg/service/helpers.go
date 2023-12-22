@@ -96,7 +96,20 @@ func ReadFile(filename string) ([]byte, error) {
 	return bytes, err
 }
 
+// HandleError logs a error and returns it
 func HandleError(e error, msg string, data *[]any) error {
 	logger.Errorf(e.Error())
 	return fmt.Errorf(msg, *data...)
+}
+
+// NewTrue returns a bool(true) pointer
+func NewTrue() *bool {
+	b := true
+	return &b
+}
+
+// NewFalse returns a bool(false) pointer
+func NewFalse() *bool {
+	b := false
+	return &b
 }

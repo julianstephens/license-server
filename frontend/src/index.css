@@ -84,6 +84,10 @@
   #root {
     @apply h-full w-full;
   }
+
+  h1 {
+    @apply text-blue-900 text-2xl font-bold;
+  }
 }
 
 @layer components {

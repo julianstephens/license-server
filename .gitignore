@@ -58,3 +58,5 @@ out/
 **/.openapi-generator/**
 **/.openapi-generator-*
 openapitools.json
+
+backend/static

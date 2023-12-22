@@ -58,7 +58,7 @@ func (lm *LicenseManager) CreateProductKeyPair(productId string) (keypair *model
 		return
 	}
 
-	if err = service.UpdateKeyFile(kpMap, productId, false, lm.Config); err != nil {
+	if err = service.UpdateKeyFile(kpMap, productId, lm.Config, &service.KeyFileOpts{IsKeypair: service.NewTrue(), ShouldRemove: service.NewFalse()}); err != nil {
 		return
 	}
 

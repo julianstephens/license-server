@@ -18,7 +18,12 @@ export const AuthForm = ({ loginMode }: { loginMode?: boolean }) => {
   const [isLoading, setLoading] = useState(false);
   const [title] = useState(loginMode ? "Sign In" : "Create an Account");
   const [submit] = useState(loginMode ? "Login" : "Register");
-  const form = useForm<model.AuthRequest>();
+  const form = useForm<model.AuthRequest>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const onSubmit = (data: model.AuthRequest) => {
     setLoading(true);

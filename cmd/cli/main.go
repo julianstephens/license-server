@@ -129,7 +129,7 @@ func main() {
 
 	logPath := path.Join(homeDir, "tmp", "lm.log")
 	logger.SetLogFile(&logPath)
-	app := kong.Must(&CLI, kong.Name("licmgr"), kong.Description("A CLI for managing software licenses"), kong.Vars{"version": conf.Server.Version}, kong.UsageOnError())
+	app := kong.Must(&CLI, kong.Name("licmgr"), kong.Description("A CLI for managing software licenses"), kong.Vars{"version": conf.App.Version}, kong.UsageOnError())
 
 	completion.Complete(app, completion.WithPredictor("file", complete.PredictFiles("*")))
 

@@ -12,7 +12,7 @@ import (
 
 func (lm *LicenseManager) getKeyPair(productId string) (privKey ed25519.PrivateKey, pubKey ed25519.PublicKey, err error) {
 	// retrieve product/version key pair
-	pkp, err := service.LoadKey(productId, lm.Config)
+	pkp, err := service.LoadKeyPair(productId, lm.Config)
 	if err != nil {
 		err = fmt.Errorf("unable to load product key pair: %+v", err)
 		return
