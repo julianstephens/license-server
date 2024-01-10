@@ -13,6 +13,7 @@ type ServerCfg struct {
 	Port                 int    `mapstructure:"port"`
 	Env                  string `mapstructure:"env"`
 	KeyFile              string `mapstructure:"keyfile"`
+	TokenFile            string `mapstructure:"tokenfile"`
 	LogFile              string `mapstructure:"logfile"`
 	OutDir               string `mapstructure:"outdir"`
 	LicenseLength        int    `mapstructure:"licenselength"`

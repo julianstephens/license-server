@@ -1,35 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { PageLayout } from "./components/layouts/PageLayout";
-import { Auth } from "../wailsjs/go/backend/App";
+import AuthProvider from "@/components/providers/AuthProvider";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import DashboardPage from "./pages/Dashboard";
+import IndexPage from "./pages/IndexPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
-  const goto = useNavigate();
-
   return (
-    <PageLayout>
-      <div className="col items-center space-y-8">
-        <h1>Welcome to License Server & Manager</h1>
-        <div className="row space-x-4">
-          <Button
-            className="px-10"
-            onClick={() => {
-              Auth().catch(console.error.bind(console));
-            }}
-          >
-            Login
-          </Button>
-          <Button
-            className="px-10"
-            onClick={() => {
-              goto("/register");
-            }}
-          >
-            Register
-          </Button>
-        </div>
-      </div>
-    </PageLayout>
+    <AuthProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/" Component={IndexPage} />
+          <Route path="/register" Component={RegisterPage} />
+          <Route path="/login" Component={LoginPage} />
+          <Route path="/dashboard" Component={DashboardPage} />
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
   );
 }
 

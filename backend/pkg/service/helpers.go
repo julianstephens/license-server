@@ -3,7 +3,7 @@ package service
 import (
 	"bufio"
 	"errors"
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -50,16 +50,16 @@ func Ensure(path string, isDir bool) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		if isDir {
 			if err = os.MkdirAll(path, os.ModePerm); err != nil {
-				logger.Errorf("unable to create key pair dir: %v", err)
+				logger.Errorf("unable to create dir: %v", err)
 				return err
 			}
 		} else {
 			f, err = os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0666)
 			if err != nil {
-				logger.Errorf("unable to open key pair file: %v", err)
+				logger.Errorf("unable to open file: %v", err)
 				return err
 			}
-			f.Close()
+			log.Fatal(f.Close())
 		}
 	}
 
@@ -99,7 +99,7 @@ func ReadFile(filename string) ([]byte, error) {
 // HandleError logs a error and returns it
 func HandleError(e error, msg string, data *[]any) error {
 	logger.Errorf(e.Error())
-	return fmt.Errorf(msg, *data...)
+	return e
 }
 
 // NewTrue returns a bool(true) pointer

@@ -53,7 +53,7 @@ func (s *AuthServer) Start() {
 	fs := http.FileServer(http.Dir(staticDir))
 	http.Handle("/", fs)
 	http.HandleFunc("/token", s.handleToken)
-	logger.Infof("Auth Server listening on port %d", s.Conf.Auth.Port)
+	logger.Infof("auth Server listening on port %d", s.Conf.Auth.Port)
 	s.httpServer = &http.Server{
 		Addr:           fmt.Sprintf(":%d", s.Conf.Auth.Port),
 		Handler:        nil,
@@ -61,7 +61,9 @@ func (s *AuthServer) Start() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	log.Fatalf("could not start auth server: %+v", s.httpServer.ListenAndServe())
+	if err := s.httpServer.ListenAndServe(); err != nil {
+		logger.Errorf("could not start auth server: %+v", err)
+	}
 }
 
 func (s *AuthServer) AuthenticateUser(openBrowser *bool) {
@@ -104,10 +106,10 @@ func (s *AuthServer) AuthenticateUser(openBrowser *bool) {
 	// block on the channel, waiting for authentication to occur
 	s.Token = <-s.Finished
 
-	logger.Infof("shutting down HTTP server")
+	logger.Infof("shutting down auth server")
 	err := s.httpServer.Shutdown(context.Background())
 	if err != nil {
-		log.Printf("Unable to shutdown http server: %s", err)
+		logger.Errorf("unable to shutdown auth server: %s", err)
 	}
 }
 
@@ -115,7 +117,7 @@ func (s *AuthServer) handleToken(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 	_, err := jws.Verify([]byte(token), jws.WithKeySet(s.SigningKeys, jws.WithInferAlgorithmFromKey(true)))
 	if err != nil {
-		logger.Errorf("unable to parse token: %+v", err)
+		logger.Errorf("unable to verify token: %+v", err)
 	}
 	if err == nil {
 		err = service.UpdateKeyFile(token, s.ServiceAppID, s.Conf, &service.KeyFileOpts{IsToken: service.NewTrue(), FileLoc: &s.TokenPath})
@@ -130,7 +132,6 @@ func (s *AuthServer) handleToken(w http.ResponseWriter, r *http.Request) {
 			if f, ok := w.(http.Flusher); ok {
 				f.Flush()
 			}
-			fmt.Println(token)
 			time.Sleep(1000 * time.Millisecond)
 			s.Finished <- &token
 		}

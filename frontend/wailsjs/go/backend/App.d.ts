@@ -3,10 +3,14 @@
 import {model} from '../models';
 import {context} from '../models';
 
-export function Auth():Promise<void>;
-
 export function CreateToken(arg1:model.AuthRequest):Promise<model.DisplayAPIKey>;
 
 export function DomReady(arg1:context.Context):Promise<void>;
 
 export function Register(arg1:model.AuthRequest):Promise<model.User>;
+
+export function SignIn():Promise<boolean>;
+
+export function SignOut():Promise<boolean>;
+
+export function WhoAmI():Promise<{[key: string]: any}>;

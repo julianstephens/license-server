@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"path"
 	"reflect"
 	"strings"
@@ -27,7 +28,7 @@ type KeyFileOpts struct {
 }
 
 func LoadKeyPair(productId string, conf *model.Config) (*model.ProductKeyPair, error) {
-	_, saveFile, err := getKeyPairFilePaths(conf)
+	_, saveFile, err := GetSecureFilePath(conf, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,6 +65,10 @@ func LoadToken(path string) (string, error) {
 		return *new(string), err
 	}
 
+	if len(contents) == 0 {
+		return *new(string), HandleError(fmt.Errorf("token file empty"), "could not load token", nil)
+	}
+
 	var f KeyFile
 	if err := jsoniter.Unmarshal(contents, &f); err != nil {
 		logger.Errorf("could not unmarshal file to struct: %+v", err)
@@ -73,13 +78,30 @@ func LoadToken(path string) (string, error) {
 	return *f.Token, nil
 }
 
+func ClearToken(path string) error {
+	if err := os.Truncate(path, 0); err != nil {
+		return HandleError(err, "failed to truncate token file", nil)
+	}
+
+	return nil
+}
+
 // UpdateKeyFile adds, replaces, or removes a key pair from the given key file
 func UpdateKeyFile[T map[string]string | string](data T, resourceID string, conf *model.Config, opts *KeyFileOpts) error {
 	didUpdate := false
+	var saveDir, saveFile string
+	var err error
 
-	saveDir, saveFile, err := getKeyPairFilePaths(conf)
-	if err != nil {
-		return err
+	if *opts.IsToken {
+		saveDir, saveFile, err = GetSecureFilePath(conf, NewTrue())
+		if err != nil {
+			return err
+		}
+	} else {
+		saveDir, saveFile, err = GetSecureFilePath(conf, NewFalse())
+		if err != nil {
+			return err
+		}
 	}
 
 	if opts.FileLoc != nil {
@@ -177,9 +199,34 @@ func UpdateKeyFile[T map[string]string | string](data T, resourceID string, conf
 	return nil
 }
 
-func getKeyPairFilePaths(conf *model.Config) (keyFileDirPath string, keyFilePath string, err error) {
-	p, err := os.Getwd()
+func GetTokenPath(conf *model.Config) (string, error) {
+	// start authentication flow
+	usr, err := user.Current()
+	if err != nil {
+		return *new(string), HandleError(err, "failed to locate the user's home directory: %+v", nil)
+	}
+
+	// ensure token file exists & load token
+	tokenDir := path.Join(usr.HomeDir, "."+conf.App.Filename)
+	err = Ensure(tokenDir, true)
+	if err != nil {
+		return *new(string), HandleError(err, "unable to ensure token dir: %+v", nil)
+	}
+	tokenPath := path.Join(tokenDir, ".token.json")
+	err = Ensure(tokenPath, false)
+	if err != nil {
+		return *new(string), HandleError(err, "unable to ensure token path: %+v", nil)
+	}
+
+	return tokenPath, nil
+}
+
+func GetSecureFilePath(conf *model.Config, isToken *bool) (keyFileDirPath string, keyFilePath string, err error) {
+	p, err := os.UserHomeDir()
+	if err != nil {
+		return
+	}
 	keyFileDirPath = path.Join(p, conf.Server.OutDir)
-	keyFilePath = path.Join(keyFileDirPath, conf.Server.KeyFile)
+	keyFilePath = path.Join(keyFileDirPath, If(*isToken, conf.Server.TokenFile, conf.Server.KeyFile))
 	return
 }

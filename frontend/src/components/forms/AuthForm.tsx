@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { model } from "@wails/models";
 import { Loader } from "../Loader";
+import { Link } from "react-router-dom";
 
 export const AuthForm = ({ loginMode }: { loginMode?: boolean }) => {
   const [isLoading, setLoading] = useState(false);
@@ -88,9 +89,17 @@ export const AuthForm = ({ loginMode }: { loginMode?: boolean }) => {
                 </FormItem>
               )}
             />
-            <Button className="block mx-auto mt-8" type="submit">
+            <Button className="block mx-auto" type="submit">
               {submit}
             </Button>
+            <Link
+              className="mx-auto hover:underline"
+              to={loginMode ? "/register" : "/login"}
+            >
+              {loginMode
+                ? "Don't have an account yet?"
+                : "Already have an account?"}
+            </Link>
           </form>
         </Form>
       )}

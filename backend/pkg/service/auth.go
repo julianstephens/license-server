@@ -4,11 +4,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jellydator/ttlcache/v3"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/labstack/gommon/log"
 	"github.com/lestrrat-go/jwx/v2/jwk"
+	"github.com/lestrrat-go/jwx/v2/jws"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
@@ -117,8 +123,72 @@ func NewJWKSet(jwkUrl string) jwk.Set {
 	// fetch once on application startup
 	_, err = jwkCache.Refresh(ctx, jwkUrl)
 	if err != nil {
-		panic("failed to fetch on startup")
+		log.Fatalf("failed to refresh auth0 JWKS: %+v", err)
 	}
 	// create the cached key set
 	return jwk.NewCachedSet(jwkCache, jwkUrl)
+}
+
+func VerifyToken(token []byte, signingKeys jwk.Set) (ok bool) {
+	var err error
+	_, err = jws.Verify(token, jws.WithKeySet(signingKeys, jws.WithInferAlgorithmFromKey(true)))
+	if err == nil {
+		ok = true
+	} else {
+		ok = false
+	}
+
+	return
+}
+
+func GetAuthToken(conf *model.Config, tokenPath string) (token []byte, signingKeys jwk.Set, err error) {
+	signingKeys = NewJWKSet(conf.Auth.JwksUrl)
+
+	tokenStr, err := LoadToken(tokenPath)
+	if err != nil {
+		return *new([]byte), signingKeys, err
+	}
+
+	ok := VerifyToken([]byte(tokenStr), signingKeys)
+	if !ok {
+		return *new([]byte), signingKeys, HandleError(fmt.Errorf("could not to verify stored token"), "unauthenticated", nil)
+	}
+
+	return []byte(tokenStr), signingKeys, nil
+}
+
+func GetUserProfile(token []byte, tokenPath string, conf *model.Config, cache *ttlcache.Cache[string, string]) (map[string]any, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://%s.us.auth0.com/userinfo", conf.Auth.TenantID), nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode == http.StatusUnauthorized {
+		cache.Delete("profile")
+		err = ClearToken(tokenPath)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("unauthenticated")
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var json map[string]any
+	err = jsoniter.Unmarshal(body, &json)
+	if err != nil {
+		return nil, err
+	}
+
+	return json, nil
 }
